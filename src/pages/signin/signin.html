@@ -1,0 +1,96 @@
+<!--
+  Generated template for the LoginPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    
+      <ion-navbar >
+        <button ion-button menuToggle >
+          <ion-icon name="menu"></ion-icon> 
+        </button>
+        <ion-title text-center>SIGN IN</ion-title>
+      </ion-navbar>
+    
+    </ion-header>
+    
+    
+    <ion-content padding>
+      <ion-row *ngIf="signedIn">
+        <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2 text-center>
+          <ion-spinner> </ion-spinner> ..
+        </ion-col>
+      </ion-row>   
+
+      <form [formGroup]="signinForm" novalidate  class="gridForm">
+        <ion-list *ngIf="!signedIn" >
+          <ion-grid nopadding>
+            <ion-row>
+              <ion-col  col-lg-8 col-xl-8 offset-lg-2 offset-xl-2>
+               <ion-item >
+                  <ion-label> 
+                    <ion-icon name="person" ></ion-icon>
+                  </ion-label>
+                  <!-- <ion-label floating color="primary">First Name</ion-label> -->
+                  <ion-input class="form-control" formControlName="username" type="email" required placeholder="Email or Mobile No">
+                  </ion-input>
+                </ion-item>
+                <p ion-text *ngIf="formErrors.username && submitted" color="danger" padding-left>
+                  {{ formErrors.username }}
+                </p>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col col-lg-6 col-xl-6 offset-lg-2 offset-xl-2>
+                <ion-item>
+                  <ion-label> 
+                    <ion-icon name="unlock" ></ion-icon>
+                  </ion-label>
+                  <!-- <ion-label floating color="primary">Password</ion-label> -->
+                  <ion-input class="form-control" formControlName="password" type="password" required *ngIf="!showPassword"  placeholder="Password"> </ion-input> 
+                  <ion-input class="form-control" formControlName="password" type="text" required *ngIf="showPassword"  placeholder="Password">  </ion-input>
+                 
+                </ion-item>  
+              </ion-col>
+              <ion-col class="showPassword" col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2>
+                <button ion-button clear (click)="toggleShowPassword()" block><span *ngIf="!showPassword">Show</span><span *ngIf="showPassword">Hide</span></button>
+              </ion-col>
+              <p ion-text *ngIf="formErrors.password && submitted" color="danger" padding-left>
+                  {{ formErrors.password }}
+                </p>
+            </ion-row>
+    
+            <ion-row>
+              <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2>
+                  <ion-item class="fineprint nolines"  text-wrap>
+                    <a>Forgot your login detail? <b>Get help signing in</b></a>
+                  </ion-item>
+              </ion-col>  
+            </ion-row>
+            <ion-row>
+              <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2>
+                  <button ion-button block color="secondary" (click)="onSubmit()"> Sign In</button>
+              </ion-col>
+            </ion-row>
+            
+            <ion-row>
+              <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2>
+                <button class="bottom" ion-button clear full color="light" (click)="signup()">Don't have an account? Sign up</button>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2 text-center>
+                <button ion-button (click)="signInWithFB()">Sign in with Facebook</button>
+                <button ion-button (click)="signInWithGoogle()">Sign in with Google</button>
+                <button ion-button (click)="signInWithLinkedIn()">Sign in with LinkedIn</button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+    
+        </ion-list>
+        
+      </form>
+    
+</ion-content>    
+    

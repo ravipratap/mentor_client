@@ -1,0 +1,193 @@
+<!--
+  Generated template for the ProfilePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>profile</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-grid nopadding>
+      <form [formGroup]="profileForm" novalidate class="gridForm" enctype="multipart/form-data">
+    
+      <ion-row>
+        <ion-col col-lg-6 col-xl-6 col-md-8 offset-md-2 offset-lg-3 offset-xl-3 text-center >
+          <div class="{{imageExists?'profilePicContainer': 'profilePicEmptyContainer'}}" >
+              <img [src]="currentImage?currentImage:'#'" #profilePic/>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row  *ngIf="!plt.is('cordova') && inEditMode">
+        <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2 text-center>
+            <input type="file"  #picture  class="inputfile" name="picture" id="picture" (change)="onFileChange($event)"  accept="image/gif, image/jpeg, image/png"/>            
+            <label  for="picture" ><ion-icon name="camera"></ion-icon> {{imageExists? 'Change Photo': "Add Photo"}}</label>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="plt.is('cordova') && inEditMode">
+        <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2 text-center (click)="presentActionSheet()">
+            <button ion-button clear  icon-start color="primary">
+                <ion-icon name="camera"></ion-icon> {{imageExists? 'Change Photo': "Add Photo"}}
+            </button>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="!hideLoader">
+        <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2 text-center>
+          <ion-spinner> </ion-spinner> Saving Photo..
+        </ion-col>
+      </ion-row>   
+    </form>
+    <ion-row>
+        <ion-col col-12 col-xs-12 col-md-12 col-lg-6 col-xl-6 *ngIf="user.intro" >
+          <ion-card padding>
+            <div *ngIf="user.intro.surveyResponse && user.intro.surveyResponse.answers && user.intro.surveyResponse.answers.length>0">
+            <h2>
+              <span *ngIf="user.intro.surveyResponse.answers[0].answer.first">{{user.intro.surveyResponse.answers[0].answer.first}} {{user.intro.surveyResponse.answers[0].answer.last}}</span>
+              <span *ngIf="!user.intro.surveyResponse.answers[0].answer.first && inEditMode">Name:</span>
+              <button *ngIf="inEditMode" ion-button small float-right icon-only (click)="editIntro()">
+                  <ion-icon name="create"></ion-icon>
+              </button>
+            </h2>
+            <p>
+              <span *ngIf="user.intro.surveyResponse.answers[0].answer.title">{{user.intro.surveyResponse.answers[0].answer.title}}</span>
+              <span *ngIf="!user.intro.surveyResponse.answers[0].answer.title && inEditMode">Title:</span>  
+            </p>
+            <p *ngIf="user.intro.surveyResponse && user.intro.surveyResponse.answers && user.intro.surveyResponse.answers[1]">
+              <span *ngIf="user.intro.surveyResponse.answers[1].answer">{{user.intro.surveyResponse.answers[1].answer}}</span>
+              <span *ngIf="!user.intro.surveyResponse.answers[1].answer && inEditMode">Location:</span>
+            </p>
+            <p>
+              <span *ngIf="user.intro.surveyResponse.answers[0].answer.intro">{{user.intro.surveyResponse.answers[0].answer.intro}}</span>
+              <span *ngIf="!user.intro.surveyResponse.answers[0].answer.intro && inEditMode">Introduction:</span>
+            </p>
+            </div>
+          </ion-card>
+        </ion-col>
+        <ion-col col-12 col-xs-12 col-md-12 col-lg-6 col-xl-6 *ngIf="user.contact">
+          <ion-card  padding>
+            <div >
+              <h3>
+                <span *ngIf="user.contact.surveyResponse.answers[0].answer.email"><ion-icon name="at"></ion-icon> {{user.contact.surveyResponse.answers[0].answer.email}}</span>
+                <button *ngIf="inEditMode && user.contact.surveyResponse.answers[0].answer.email && !user.contact.surveyResponse.answers[0].answer.email_verified" ion-button  small outline color ="danger" (click)="verifyContact(user.contact.surveyResponse.answers[0].answer.email, undefined)" >
+                  <ion-icon name="done-all"></ion-icon> &nbsp;Verify
+                </button>
+                <span *ngIf="!user.contact.surveyResponse.answers[0].answer.email">Email:</span>
+                <button *ngIf="inEditMode" ion-button small float-right icon-only (click)="editContact()"><ion-icon name="create"></ion-icon></button>
+              </h3>
+              <h3>
+                <span *ngIf="user.contact.surveyResponse.answers[0].answer.mobile"><ion-icon name="call"></ion-icon> {{user.contact.surveyResponse.answers[0].answer.mobile}}</span>
+                <button *ngIf="inEditMode && user.contact.surveyResponse.answers[0].answer.mobile && !user.contact.surveyResponse.answers[0].answer.mobile_verified" ion-button  small outline color ="danger"  (click)="verifyContact(undefined, user.contact.surveyResponse.answers[0].answer.mobile)" >
+                    <ion-icon name="done-all"></ion-icon> &nbsp;Verify
+                  </button>
+                <span *ngIf="!user.contact.surveyResponse.answers[0].answer.mobile">Mobile:</span>
+              </h3>
+            </div>
+          </ion-card>
+        </ion-col>
+        <ion-col col-12 col-xs-12 col-md-12 col-lg-6 col-xl-6 *ngIf="inEditMode || user.positions" >
+          <ion-card padding>
+            <div  *ngIf="user.positions && user.positions.surveyResponse.answers && user.positions.surveyResponse.answers.length > 0"  >
+              <button *ngIf="inEditMode" ion-button small float-right icon-only (click)="editPositions()"><ion-icon name="create"></ion-icon></button>
+              <div *ngFor="let position of user.positions.surveyResponse.answers; let positionIndex = index">
+                <h3>{{position.answer.designation}}</h3>
+                <h3>{{position.answer.company}}</h3>
+                <p>{{position.answer.industry}}</p>
+                <p>{{position.answer.location}}</p>
+                <p *ngIf="position.answer.is_current && !position.answer.startDate && !position.answer.endDate">Currently working</p>
+                <p *ngIf="position.answer.startDate || position.answer.endDate">
+                  <span>{{position.answer.startDate}}</span>
+                  <span *ngIf="position.answer.is_current"> - </span>
+                  <span *ngIf="!position.answer.is_current && position.answer.endDate"> - {{position.answer.endDate}}</span>
+                </p>
+              </div>
+            </div>
+            <ion-item>
+              <button ion-button icon-left clear item-end  (click)="addPosition()">
+                <ion-icon name="add"></ion-icon>
+                Add Experience
+              </button>
+            </ion-item>
+          </ion-card>
+        </ion-col>
+        <ion-col col-12 col-xs-12 col-md-12 col-lg-6 col-xl-6  *ngIf="inEditMode || user.education" >
+          <ion-card padding>
+            <div  *ngIf="user.education && user.education.surveyResponse && user.education.surveyResponse.answers.length > 0" >
+                <button *ngIf="inEditMode" ion-button small float-right icon-only (click)="editEducation()"><ion-icon name="create"></ion-icon></button>
+                <div *ngFor="let edu of user.education.surveyResponse.answers; let eduIndex = index">
+                  <h3>{{edu.answer.degree}}</h3>
+                  <h3>{{edu.answer.school}}</h3>
+                  <p *ngIf="edu.answer.is_student && !edu.answer.startYear && !edu.answer.endYear">Currently studying</p>
+                  <p *ngIf="edu.answer.startYear || edu.answer.endYear">
+                    <span>{{edu.answer.startYear}}</span>
+                    <span *ngIf="edu.answer.is_student"> - </span>
+                    <span *ngIf="!edu.answer.is_student && edu.answer.endYear"> - {{edu.answer.endYear}}</span>
+                  </p>
+                </div>
+            </div>
+            <ion-item>
+              <button ion-button icon-left clear item-end  (click)="addEducation()">
+                <ion-icon name="add"></ion-icon>
+                Add education
+              </button>
+            </ion-item>
+
+          </ion-card>
+        </ion-col>
+        <ion-col col-12 col-xs-12 col-md-12 col-lg-6 col-xl-6 *ngIf="user.personal_profile">
+          <ion-card  padding>
+            <div >
+              <h3>Age : {{user.personal_profile.surveyResponse.answers[0].answer}}
+                  <button *ngIf="inEditMode" ion-button small float-right icon-only (click)="editPersonalProfile()"><ion-icon name="create"></ion-icon></button>
+              </h3>
+              <h3>Gender : {{user.personal_profile.surveyResponse.answers[1].answer}}</h3>
+              <h3>Experience : {{user.personal_profile.surveyResponse.answers[2].answer? user.personal_profile.surveyResponse.answers[2].answer+ " years":""}}</h3>
+            </div>
+
+          </ion-card>
+        </ion-col>
+        <ion-col col-12 col-xs-12 col-md-12 col-lg-6 col-xl-6  *ngIf="user.professional_profile" >
+          <ion-card padding>
+            <div >
+              <h3>Skills : {{user.professional_profile.surveyResponse.answers[0].answer?user.professional_profile.surveyResponse.answers[0].answer.join(", "):""}}
+                  <button *ngIf="inEditMode" ion-button small float-right icon-only (click)="editProfessionalProfile()"><ion-icon name="create"></ion-icon></button>
+              </h3>
+              <h3>Function : {{user.professional_profile.surveyResponse.answers[1].answer?user.professional_profile.surveyResponse.answers[1].answer.join(", "):""}}</h3>
+              <h3>Level : {{user.professional_profile.surveyResponse.answers[2].answer}}</h3>
+              <h3>Industry : {{user.professional_profile.surveyResponse.answers[3].answer?user.professional_profile.surveyResponse.answers[3].answer.join(", "):""}}</h3>
+            </div>
+
+          </ion-card>
+        </ion-col>
+    </ion-row>
+    <ion-row padding>
+        <!-- Avatar -->
+        <ion-col col-3>
+                <ion-item>
+                  <ion-avatar item-start>
+                      <ion-img src="{{user?user.pic?user.pic.thumbnail:'#':'#'}}" alt=""> </ion-img>
+                  </ion-avatar>
+                </ion-item>
+        </ion-col>
+        <!-- Information about user -->
+        <ion-col col-3 text-center >
+          <h6>21</h6>
+          <p no-padding no-margin>Thanks</p>
+        </ion-col>
+        <ion-col col-3 text-center>
+          <h6>114</h6>
+          <p no-padding no-margin>following</p>
+        </ion-col>
+        <ion-col col-3 text-center>
+          <h6>8</h6>
+          <p no-padding no-margin>Badges</p>
+        </ion-col>
+      </ion-row>
+  </ion-grid>
+
+</ion-content>

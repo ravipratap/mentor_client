@@ -1,0 +1,130 @@
+<!--
+  Generated template for the SurveyQuestionPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{navTitle}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <form [formGroup]="questionForm" novalidate >
+    <ion-grid nopadding>
+      <ion-row>
+        <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2>
+          <ion-item >
+            <ion-label> 
+              <ion-icon name="help-circle" ></ion-icon>
+            </ion-label>
+            <ion-input class="form-control" formControlName="question" type="text" required placeholder="Enter question">
+            </ion-input>
+          </ion-item>
+          <p ion-text *ngIf="formErrors.question && submitted" color="danger" padding-left>
+            {{ formErrors.question }}
+          </p>
+
+          <ion-item >
+            <ion-label >Seperate question for {{siteConfig.config["roles"]  && siteConfig.config["roles"].length > 0 ? siteConfig.config["roles"][0]: "Mentor" }}</ion-label>
+            <ion-toggle  formControlName="seperate_question" color="primary"></ion-toggle>
+          </ion-item>
+          <ion-item *ngIf="questionForm.controls.seperate_question.value">
+            <ion-label> 
+              <ion-icon name="help" ></ion-icon> 
+            </ion-label>
+            <ion-input class="form-control" formControlName="mentor_question" type="text" placeholder="Question for mentor">
+              </ion-input>
+          </ion-item>
+          <p ion-text *ngIf="questionForm.controls.seperate_question.value && formErrors.mentor_question && submitted" color="danger" padding-left>
+            {{ formErrors.mentor_question }}
+          </p>
+          <ion-item >
+            <ion-label >Mandatory</ion-label>
+            <ion-toggle  formControlName="mandatory" color="primary"></ion-toggle>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Answer Category</ion-label>
+            <ion-select formControlName="category" class="smallerLabel" (ionChange)="setChoiceControl()">
+              <ion-option value= "Multiple">Multi Select</ion-option>
+              <ion-option value= "Radio">Single Select</ion-option>
+              <ion-option value= "Yes/No">Yes/No</ion-option>
+              <ion-option value= "Star Rating">Star Rating</ion-option>
+              <ion-option value= "NPS">NPS</ion-option>
+              <ion-option value= "Text">Text</ion-option>
+              <ion-option value= "Number">Number</ion-option>
+              <ion-option value= "URL">URL</ion-option>
+              <ion-option value= "Email">Email</ion-option>
+              <ion-option value= "Telephone">Telephone</ion-option>
+              <ion-option value= "Current Location">Current Location</ion-option>
+              <ion-option value= "Location">Location</ion-option>
+              <ion-option value= "Skills">Skills</ion-option>
+              <ion-option value= "Company">Company</ion-option>
+              <ion-option value= "Designation">Designation</ion-option>
+              <ion-option value= "School">School</ion-option>
+              <ion-option value= "Degree">Degree</ion-option>
+              <ion-option value= "ExpInYrs">Years of Experience</ion-option>
+              <ion-option value= "Job Level">Job Level</ion-option>
+              <ion-option value= "Function">Function</ion-option>
+              <ion-option value= "Industry">Industry</ion-option>
+              <ion-option value= "Age">Age</ion-option>
+              <ion-option value= "Gender">Gender</ion-option>
+              <ion-option value= "Background">Professional Background</ion-option>
+              <ion-option value= "Sign">Signature</ion-option>
+              <ion-option value= "Contact">Contact</ion-option>
+              <ion-option value= "Position">Position</ion-option>
+              <ion-option value= "Education">Education</ion-option>
+              <ion-option value= "Photo">Photo</ion-option>
+              <ion-option value= "Role">Role Selection</ion-option>
+            </ion-select>
+          </ion-item>
+          <p ion-text *ngIf="formErrors.category && submitted" color="danger" padding-left>
+            {{ formErrors.category }}
+          </p>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="showChoices">
+          <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2 formArrayName="choices">
+            <div *ngFor="let choice of questionForm.controls['choices'].controls; let i = index" [formGroupName]="i">
+              <ion-item >
+                <ion-label> 
+                  <ion-icon name="checkbox" ></ion-icon> 
+                </ion-label>
+                <ion-input class="form-control" formControlName="choice" type="text" placeholder="Enter option"> 
+                </ion-input>
+                <button ion-button icon-only item-end  (click)="removeChoice(i)">
+                  <ion-icon name="trash"></ion-icon>
+                </button>                  
+              </ion-item>
+              <p ion-text *ngIf="!choice.valid && submitted" color="danger" padding-left>
+                Choices need to be unique
+              </p>
+            </div>
+            <button ion-button round color="primary" (click)="addChoice()" *ngIf="showAddChoice"><ion-icon name="add"></ion-icon></button>
+          </ion-col>
+        </ion-row>
+      <ion-row>
+        <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2>
+          <ion-item *ngIf="questionForm.controls.category.value=='Multiple' || questionForm.controls.category.value=='Radio'">
+            <ion-label >Allow Other as option</ion-label>
+            <ion-toggle  formControlName="other_choice" color="primary"></ion-toggle>
+          </ion-item>
+          <ion-item *ngIf="questionForm.controls.category.value=='Text' || questionForm.controls.category.value=='NPS'"> 
+              <ion-label> 
+                <ion-icon name="color-fill" ></ion-icon> 
+              </ion-label>
+              <ion-input class="form-control" formControlName="placeholder" type="text" placeholder="{{questionForm.controls.category.value=='NPS'? 'Enter Scale description' : 'Enter placeholder text'}}"> 
+                </ion-input>
+          </ion-item>
+          <button ion-button  block color="secondary" (click)="save()">Update</button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+
+</ion-content>

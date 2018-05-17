@@ -1,0 +1,144 @@
+<!--
+  Generated template for the ProgramListPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle >
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Manage Programs</ion-title>
+    <p *ngIf="site">{{site.profile.company}}</p>
+    <ion-buttons end right>
+      <button ion-button icon-only (click)="addProgram()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-searchbar
+    [showCancelButton]="true"
+    (ionInput)="onSearchInput($event)"
+    (ionCancel)="onSearchCancel($event)">
+  </ion-searchbar>
+  <ion-item *ngIf="!hiddenSearchLoader">
+    <ion-spinner> </ion-spinner> Finding sites..
+  </ion-item>
+  <ion-row>
+    <ion-col col-12 col-xs-12 col-md-12 col-lg-6 col-xl-4  *ngFor="let program of programs; let programIndex = index">
+      <ion-card >
+        <ion-item>
+            <ion-avatar item-start>
+                <img src="{{program?program.profile.thumbnail?program.profile.thumbnail:'#':'#'}}" alt=""/>
+            </ion-avatar>
+          <h2>{{program.profile.name}} <span *ngIf="program.profile.is_default" >(All Users) </span></h2> 
+          <p> {{program.profile.category}} {{program.profile.mentoring_goal?"- " +program.profile.mentoring_goal:""}}</p>
+        </ion-item>
+        <div padding>
+          <ion-segment [(ngModel)]="program.stage">
+            <ion-segment-button value="Signup">
+              Sign Up
+            </ion-segment-button>
+            <ion-segment-button value="Progress">
+              Progress
+            </ion-segment-button>
+            <ion-segment-button value="Feedback">
+              Feedback
+            </ion-segment-button>
+          </ion-segment>
+        </div>
+        <div [ngSwitch]="program.stage">
+          <div *ngSwitchCase="'Signup'">
+            <ion-row no-padding>
+              <ion-col no-padding col-6>
+                <ion-item>
+                  <h2>Mentor Sign up</h2>
+                  <h3><ion-icon name="calendar" item-left ></ion-icon>{{program.profile.mentor_signup | date:"dd/MM/yy" }}</h3>
+                  </ion-item>
+              </ion-col>
+              <ion-col no-padding col-6>
+                <ion-item>
+                  <h2>Mentee Sign up</h2>
+                  <h3><ion-icon name="calendar" item-left  ></ion-icon>{{program.profile.mentee_signup | date:"dd/MM/yy" }}</h3>
+                  </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row no-padding>
+              <ion-col no-padding col-6 offset-3>
+                <ion-item>
+                  <h2>Matching Start</h2>
+                  <h3><ion-icon name="calendar" item-left ></ion-icon>{{program.profile.matching_start | date:"dd/MM/yy" }}</h3>
+                  </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row no-padding>
+              <ion-col no-padding col-6>
+                <ion-item>
+                  <h2>Program Start</h2>
+                  <h3><ion-icon name="calendar" item-left ></ion-icon>{{program.profile.start | date:"dd/MM/yy" }}</h3>
+                  </ion-item>
+              </ion-col>
+              <ion-col no-padding col-6>
+                <ion-item>
+                  <h2>Program End</h2>
+                  <h3><ion-icon name="calendar" item-left  ></ion-icon>{{program.profile.end | date:"dd/MM/yy" }}</h3>
+                  </ion-item>
+              </ion-col>
+            </ion-row> 
+            <ion-list>
+                <button ion-item  (click)="manageSignUpProgram(program)">
+                  Sign Up Questions
+                </button>
+                <button ion-item   (click)="manageSignUpProgram(program, true)">
+                  Post Sign up questions
+                </button>
+                <button ion-item  (click)="manageAdmins(program)">
+                  Manage Program Admins
+                </button>  
+              </ion-list> 
+          </div>
+          <div *ngSwitchCase="'Progress'"> 2 </div>
+          <div *ngSwitchCase="'Feedback'"> 3 </div>
+        </div>
+      
+        <ion-item>
+          <span item-left>18 min</span>
+          <span item-left>(2.6 mi)</span>
+          <button ion-button icon-left clear item-end>
+            <ion-icon name="navigate"></ion-icon>
+            Start
+          </button>
+        </ion-item>
+        <ion-row>
+          <ion-col>
+            <button ion-button icon-left clear small (click)="editProgram(program, programIndex)">
+              <ion-icon name="thumbs-up"></ion-icon>
+              <div>Edit</div>
+            </button>
+          </ion-col>
+          <ion-col>
+            <button ion-button icon-left clear small (click)="manageSignUpProgram(program)">
+              <ion-icon name="text"></ion-icon>
+              <div>Signup</div>
+            </button>
+          </ion-col>
+          <ion-col center text-center>
+            <ion-note>
+              11h ago
+            </ion-note>
+          </ion-col>
+        </ion-row>
+      </ion-card> 
+    </ion-col>
+    <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMorePrograms())" *ngIf="toBeLoaded">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-row>
+</ion-content>

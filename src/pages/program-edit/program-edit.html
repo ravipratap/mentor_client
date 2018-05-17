@@ -1,0 +1,192 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons start left>
+      <button ion-button icon-only navPop>
+        <ion-icon name="close"></ion-icon>
+      </button>
+
+      <button ion-button icon-only *ngIf="showPrev" (click)="prev()">
+          <ion-icon name="arrow-round-back"></ion-icon>
+        </button>
+    </ion-buttons>
+    
+    <ion-title text-center >{{navTitle}}</ion-title>
+
+    
+    <ion-buttons end right>
+        <button ion-button icon-only *ngIf="showNext" (click)="next()">
+            <ion-icon name="arrow-round-forward"></ion-icon>
+        </button>
+        <button ion-button icon-only *ngIf="!showNext" (click)="save()">
+            <ion-icon name="checkmark"></ion-icon>
+        </button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <div *ngIf="programForm">
+    <form [formGroup]="programForm" novalidate  enctype="multipart/form-data">
+      <ion-slides #programEditSlider (ionSlideWillChange)="onSlideChangeStart($event)">
+        <ion-slide formGroupName="profile">
+          <ion-grid nopadding >
+            <ion-row>
+              <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2>
+                <ion-item >
+                  <ion-label> 
+                    <ion-icon name="bookmark" ></ion-icon>
+                  </ion-label>
+                  <ion-input class="form-control" formControlName="name" type="text" required placeholder="Program Name">
+                  </ion-input>
+                </ion-item>
+                <p ion-text *ngIf="formErrors.name && submitted" color="danger" padding-left>
+                  {{ formErrors.name }}
+                </p>
+                <ion-item>
+                  <ion-label>Category</ion-label>
+                  <ion-select formControlName="category" class="smallerLabel">
+                    <ion-option *ngIf="siteConfig.config.mentor" value= "Mentoring">Mentoring</ion-option>
+                    <ion-option *ngIf="siteConfig.config.kudos" value= "Kudos">Kudos</ion-option>
+                    <ion-option *ngIf="siteConfig.config.pulse" value= "Employee pulse">Employee pulse</ion-option>
+                    <ion-option *ngIf="siteConfig.config.peer" value= "Peer Review">Peer Review</ion-option>
+                    <ion-option *ngIf="siteConfig.config.idea" value= "Ideas">Ideas</ion-option>
+                    <ion-option *ngIf="siteConfig.config.advice" value= "Advice from experts">Advice from experts</ion-option>
+                    <ion-option *ngIf="siteConfig.config.performance" value= "Performance Review">Performance Review</ion-option>
+                  </ion-select>
+                </ion-item>
+                <p ion-text *ngIf="formErrors.category && submitted" color="danger" padding-left>
+                  {{ formErrors.category }}
+                </p>
+                <ion-item *ngIf="programForm.get('profile').controls.category && programForm.get('profile').controls.category.value  == 'Mentoring'">
+                  <ion-label>Objective</ion-label>
+                  <ion-select formControlName="mentoring_goal" class="smallerLabel">
+                    <ion-option value= "Career planning">Career planning</ion-option>
+                    <ion-option value= "Corporate Understanding">Corporate Understanding</ion-option>
+                    <ion-option value="Diversity Initiative">Diversity Initiative</ion-option>
+                    <ion-option value= "Job Training">Job Training</ion-option>
+                    <ion-option value= "Knowledge Development">Knowledge Development</ion-option>
+                    <ion-option value= "Leadership Development">Leadership Development</ion-option>
+                    <ion-option value= "Network Building">Network Building</ion-option>
+                    <ion-option value= "New Employee Socialization">New Employee Socialization</ion-option>
+                    <ion-option value= "New work processes">New work processes</ion-option>
+                    <ion-option value= "Problem Solving">Problem Solving</ion-option>
+                    <ion-option value= "Succession Planning">Succession Planning</ion-option>
+                    <ion-option value= "Talent Retention">Talent Retention</ion-option>
+                    <ion-option value= "Work/Family Support">Work/Family Support</ion-option>
+                  </ion-select>
+                </ion-item>
+                <p ion-text *ngIf="formErrors.mentoring_goal && submitted" color="danger" padding-left>
+                  {{ formErrors.mentoring_goal }}
+                </p>
+                <ion-item >
+                  <ion-label >For all users</ion-label>
+                  <ion-toggle  formControlName="is_default" color="primary"></ion-toggle>
+                </ion-item>
+                <ion-item >
+                  <ion-label> 
+                    <ion-icon name="list" ></ion-icon>
+                  </ion-label>
+                  <ion-textarea class="form-control" formControlName="desc" type="text" rows="5" placeholder="Describe the program">
+                  </ion-textarea>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2>
+                  <button ion-button  block color="secondary" (click)="next()"> Next</button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-slide>
+
+        <ion-slide formGroupName="dates">
+          <ion-grid nopadding>
+            <ion-row>
+              <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2>
+                <ion-item >
+                  <ion-label>Mentor Sign Up</ion-label>
+                  <ion-datetime displayFormat="MMM DD YYYY" formControlName="mentor_signup"  placeholder="Pick Date" min="2018" max="{{maxDate}}" ></ion-datetime>
+                </ion-item>
+                <p ion-text *ngIf="formErrors.mentor_signup && submitted" color="danger" padding-left>
+                  {{ formErrors.mentor_signup }}
+                </p>
+                <ion-item >
+                  <ion-label>Mentee Sign Up</ion-label>
+                  <ion-datetime displayFormat="MMM DD YYYY" formControlName="mentee_signup" placeholder="Pick Date"  min="2018" max="{{maxDateEnd}}" ></ion-datetime>
+                </ion-item>
+                <p ion-text *ngIf="formErrors.mentee_signup && submitted" color="danger" padding-left>
+                  {{ formErrors.mentee_signup }}
+                </p>
+                <ion-item >
+                  <ion-label>Matching Start</ion-label>
+                  <ion-datetime displayFormat="MMM DD YYYY" formControlName="start"  placeholder="Pick Date" min="2018" max="{{maxDate}}" ></ion-datetime>
+                </ion-item>
+                <p ion-text *ngIf="formErrors.start && submitted" color="danger" padding-left>
+                  {{ formErrors.start }}
+                </p>
+                <ion-item >
+                  <ion-label>Program Start</ion-label>
+                  <ion-datetime displayFormat="MMM DD YYYY" formControlName="matching_start"  placeholder="Pick Date" min="2018" max="{{maxDate}}" ></ion-datetime>
+                </ion-item>
+                <p ion-text *ngIf="formErrors.matching_start && submitted" color="danger" padding-left>
+                  {{ formErrors.matching_start }}
+                </p>
+                <ion-item >
+                  <ion-label>Program End</ion-label>
+                  <ion-datetime displayFormat="MMM DD YYYY" formControlName="end" placeholder="Pick Date"  min="2018" max="{{maxDateEnd}}" ></ion-datetime>
+                </ion-item>
+                <p ion-text *ngIf="formErrors.end && submitted" color="danger" padding-left>
+                  {{ formErrors.end }}
+                </p>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2>
+                    <button ion-button  block color="secondary" (click)="next()"> Next</button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-slide>
+
+      <ion-slide>
+          <ion-grid nopadding>
+            <ion-row>
+              <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2>
+                <h3>  Upload Program Logo </h3>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col col-lg-6 col-xl-6 col-md-8 offset-md-2 offset-lg-3 offset-xl-3 text-center >
+                <div class="{{imageExists?'profilePicContainer': 'profilePicEmptyContainer'}}" >
+                    <img [src]="currentImage?currentImage:'#'" #profilePic/>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row  *ngIf="!plt.is('cordova')">
+              <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2 text-center>
+                  <input type="file"  #picture  class="inputfile" name="picture" id="picture" (change)="onFileChange($event)"  accept="image/gif, image/jpeg, image/png"/>            
+                  <label  for="picture" ><ion-icon name="camera"></ion-icon> {{imageExists? 'Change Photo': "Add Photo"}}</label>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="plt.is('cordova')">
+              <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2 text-center (click)="presentActionSheet()">
+                  <button ion-button clear  icon-start color="primary">
+                      <ion-icon name="camera"></ion-icon> {{imageExists? 'Change Photo': "Add Photo"}}
+                  </button>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2>
+                  <button ion-button  block color="secondary" (click)="save()">Save</button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-slide>
+
+
+      </ion-slides>
+    </form>
+  </div>
+</ion-content>

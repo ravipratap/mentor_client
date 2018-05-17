@@ -1,0 +1,55 @@
+<ion-content no-bounce class="bg-cover-page">
+    <ion-row *ngIf="signedIn">
+      <ion-col col-lg-8 col-xl-8 offset-lg-2 offset-xl-2 text-center>
+        <ion-spinner> </ion-spinner> ..
+      </ion-col>
+    </ion-row>   
+
+      <ion-grid nopadding *ngIf="!signedIn">
+        <ion-row>
+          <ion-col col-lg-8 col-xl-6 offset-lg-2 offset-xl-3>
+            <ion-slides #slides (ionSlideWillChange)="onSlideChangeStart($event)" pager>
+
+              <ion-slide>
+                <!-- <img src="assets/img/ladder.jpeg" class="slide-image"/> -->
+                <h2 class="slide-title">
+                  You can climb multiple steps with your <b>mentor</b>
+                </h2>
+                <p>
+                  The <b>Mentor Rank App</b> allows you to reach out to top experts in your field.
+                </p>
+              </ion-slide>
+
+              <ion-slide>
+                <!-- <img src="assets/img/wisdom.jpeg" class="slide-image"/> -->
+                <h2 class="slide-title" >Find an Expert</h2>
+                <p>Experts listed by area of their expertise explaining their criteria for mentoring.</p>
+              </ion-slide>
+
+              <ion-slide>
+                <!-- <img src="assets/img/ask.jpeg" class="slide-image"/> -->
+                <h2 class="slide-title">Ask for advice</h2>
+                <p>Take a mock interview, ask a question.</p>
+              </ion-slide>
+
+              <ion-slide>
+                <!-- <img src="assets/img/meeting.jpg" class="slide-image"/> -->
+                <h2 class="slide-title">Ready to Meet?</h2>
+                <button ion-button icon-right large clear (click)="startApp()">
+                  Continue
+                  <ion-icon name="arrow-forward"></ion-icon>
+                </button>
+              </ion-slide>
+
+            </ion-slides>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-lg-8 col-xl-6 offset-lg-2 offset-xl-3 text-center>
+              <button ion-button (click)="signin()">Sign In</button>
+        
+              <button ion-button (click)="signup()">Sign Up</button>
+            </ion-col>
+          </ion-row>
+      </ion-grid>
+</ion-content>
