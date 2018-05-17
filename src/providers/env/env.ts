@@ -1,6 +1,6 @@
 // export const SERVER_URL="http://192.168.0.151.xip.io:3000";
-export const SERVER_URL="http://192.168.0.151.nip.io:3000";
-// export const SERVER_URL="http://192.168.0.151:3000";
+// export const SERVER_URL="http://192.168.0.151.nip.io:3000";
+export const SERVER_URL="http://192.168.0.151:3000";
 // export const SERVER_URL="http://localhost:3000";
 export const DEFAULT_THEME="theme-insta";
 

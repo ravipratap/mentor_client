@@ -113,7 +113,7 @@ export class AuthProvider {
     console.log("profile from FB: ", JSON.stringify(res)); 
     socialUser.login.facebook = res.id;
     socialUser.login.email = res.email;
-    socialUser.login.email_verified = res.verified;
+    socialUser.login.email_verified = true;// res.verified;
     socialUser.sign.first = res.first_name;
     socialUser.sign.last = res.last_name;
     if(res.gender) {
