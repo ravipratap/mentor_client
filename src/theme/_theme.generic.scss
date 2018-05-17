@@ -1,0 +1,277 @@
+@mixin app-theme($theme-name, $th-bgcolor, $th-text-color,$th-text-inverse-color, 
+    $th-text-hover-color , $th-link-color,$th-link-inverse-color,$th-link-hover-color, 
+    $th-subdued-tab-color, $th-tab-color, $th-tab-border, $th-toolbar-color, 
+    $th-toolbar-border, $th-toolbar-text-color, $th-menu-text-color, $th-menu-color, $th-menu-hover-color, 
+    $th-subdued-color, $th-subdued-inverse-color, $th-subdued-hover-color, $th-bg-img) {
+    .theme-#{$theme-name} {
+        background-color: $th-bgcolor;      
+        h1,h2,h3,h4,h5,h6,p.theme,body,div,
+        .select-icon .select-icon-inner {
+            //transition: all 1.1s ease;
+            color: $th-text-color;
+        }
+        p:not(.text-md-danger):not(.text-ios-danger):not(.text-wp-danger) {
+            color: $th-subdued-color;
+        }
+        .onboard {
+        border-color: $th-toolbar-color ;
+        }
+        .toolbar-background{
+        //transition: all 1.1s ease;
+        background-color: $th-toolbar-color ;
+        }
+        ion-menu .toolbar-title {
+             color: $th-menu-text-color ;
+        }
+        .toolbar-title, .bar-button-default {
+        color: $th-toolbar-text-color ;
+        }
+        ion-navbar.toolbar-wp {
+            border-bottom: 1px solid $th-toolbar-border;
+        }
+        // .item-note,
+        // .themeButton,
+        // .swiper-pagination-bullet {
+        //     transition: all 1.1s ease;
+        // }
+        ion-content,
+        .input-wrapper,
+        .item-inner,
+        .item,
+        ion-item,
+        ion-label, 
+        .item-input .label-wp, .item-select .label-wp, .item-datetime .label-wp,
+        .item-input .label-md, .item-select .label-md, .item-datetime .label-md,
+        .contentArea ion-icon {
+        //transition: all 1.1s ease;
+        background-color: $th-bgcolor;
+        color: $th-text-color;
+        }
+        ion-list {
+        background-color: $th-bgcolor;
+        }
+        .time {
+        background-color: $th-text-color;
+        }
+        .item {
+        transition: all 1s ease;
+        background-color: $th-bgcolor;
+        color: $th-text-color;
+        }
+        .range-bar {
+        background-color: $th-subdued-color;
+        }
+        .range-bar-active {
+        background-color: $th-text-color;
+        }    
+        // .s2,
+        // .s3,
+        .range-pin,
+        .range-pin::before,
+        .range-knob{
+        background-color: $th-tab-border;
+        color: $th-text-color;
+        }    
+        .tabbar, ion-footer, ion-footer .toolbar-background   {
+            background-color: $th-tab-color;
+            color: $th-tab-color;
+        }
+        .item-radio-checked.item-md ion-label, .item-radio-checked.item-ios ion-label {
+            color: $th-text-hover-color;
+        }
+        .radio-md .radio-checked, .radio-ios .radio-checked .radio-inner, .radio-wp .radio-checked {
+            border-color: $th-text-hover-color;
+        }
+        .tabs .tab-button[aria-selected=true],  .tabs  .tab-button[aria-selected=true] .tab-button-icon,
+        .tabs  .tab-button .tab-button-icon.ion-md-add-circle, .tabs  .tab-button .tab-button-icon.ion-ios-add-circle-outline, .tabs  .tab-button .tab-button-icon.ion-wp-add-circle  {
+            color: $th-toolbar-text-color;
+        }
+        .icon-md-dark, .icon-wp-dark, .icon-ios-dark {
+            color: $th-menu-hover-color;
+        }
+        .tabs .tab-button,  .tabs  .tab-button .tab-button-icon, .icon-md-light, .icon-wp-light, .icon-ios-light {
+            color: $th-subdued-tab-color;
+        }
+        .tabs-wp .tab-button[aria-selected=true] {
+            border-bottom-color: $th-tab-border;
+        }
+        ion-menu ion-list, ion-menu .toolbar-background {
+             background-color: $th-menu-color;
+            color: $th-menu-text-color;
+        }
+
+        ion-menu .input-wrapper,
+        ion-menu .item-inner,
+        ion-menu .item,
+        ion-menu ion-item,
+        ion-menu ion-label {
+        background-color: $th-menu-color;
+        color: $th-menu-text-color;
+        }
+        ion-menu .outer-content {
+            background-color: $th-menu-color;
+        }
+        .inputfile + label,.button-clear-md, .button-clear-wp,.button-clear-ios, .bar-button-clear-md,  .bar-button-clear-ios,  .bar-button-clear-wp {
+            color: $th-link-color;
+        }
+        
+       
+        .button-md-primary, .button-wp-primary, .button-ios-primary, 
+        .fab-md-primary, .fab-wp-primary, .fab-ios-primary,
+        .badge-md-primary, .badge-wp-primary, .badge-ios-primary, 
+        .button-default-md, .button-default-wp, .button-default-ios {
+            color: $th-link-inverse-color;
+            background-color: $th-link-color;
+        }
+        .button-md-primary:hover:not(.disable-hover), .button-wp-primary:hover:not(.disable-hover), .button-ios-primary:hover:not(.disable-hover),
+        .button-default-md:hover:not(.disable-hover), .button-default-wp:hover:not(.disable-hover), .button-default-ios:hover:not(.disable-hover) {
+            background-color: $th-link-hover-color;
+        }
+        .button-clear-md:hover:not(.disable-hover), .button-clear-wp:hover:not(.disable-hover),.button-clear-ios:hover:not(.disable-hover),
+         .bar-button-clear-md:hover:not(.disable-hover),  .bar-button-clear-ios:hover:not(.disable-hover),  .bar-button-clear-wp:hover:not(.disable-hover){
+           color: $th-link-hover-color;
+        }
+        .fineprint ion-label, .fineprint ion-label a {
+            color: $th-subdued-color;
+        }
+        .button-md-light, .button-ios-light, .button-ios-light {
+            color: $th-subdued-inverse-color;
+            background-color: $th-subdued-color;
+        }
+        .button-md-light:hover:not(.disable-hover) {
+            background-color: $th-subdued-hover-color;
+        }
+        .button-md-secondary, .button-wp-secondary, .button-ios-secondary,
+        .fab-md-secondary, .fab-wp-secondary, .fab-ios-secondary,
+        .badge-md-secondary, .badge-wp-secondary, .badge-ios-secondary {
+            color: $th-text-inverse-color;
+            background-color: $th-text-color;
+        }
+        .button-md-secondary:hover:not(.disable-hover) {
+            background-color: $th-text-hover-color;
+        }
+        .item-input ion-icon {
+            color: $th-subdued-color;
+        }
+        *::-webkit-input-placeholder {
+            color: $th-subdued-color;
+        }
+        *:-moz-placeholder {
+            color: $th-subdued-color;
+        }
+        *:-ms-input-placeholder { /* IE10+ */
+            color: $th-subdued-color;
+        }
+        ion-footer .item-input ion-icon {
+            color: $th-subdued-tab-color;
+        }
+        ion-footer *::-webkit-input-placeholder {
+            color: $th-subdued-tab-color;
+        }
+        ion-footer *:-moz-placeholder {
+            color: $th-subdued-tab-color;
+        }
+        ion-footer *:-ms-input-placeholder { /* IE10+ */
+            color: $th-subdued-tab-color;
+        }
+        .subdued-color {
+            color: $th-subdued-tab-color
+        }
+        .link-color {
+            color: $th-link-color;       
+        }
+        .text-color {
+            color: $th-text-color;       
+        }
+        .menu-color {
+            color: $th-menu-color;       
+        }
+        .segment-ios .segment-button.segment-activated {
+            color: $th-toolbar-text-color;
+            background-color:$th-toolbar-color;
+        }
+        .segment-ios .segment-button {
+            color: $th-subdued-tab-color;
+            border-color: $th-subdued-tab-color;
+        }
+        .segment-md .segment-button, .segment-wp .segment-button{
+            color: $th-subdued-tab-color;
+            border-bottom-color: $th-subdued-tab-color;
+        }
+        .segment-md .segment-button.activated, .segment-md .segment-button.segment-activated {
+            border-bottom-color: $th-toolbar-border;
+            color: $th-link-color;
+        }
+         .toggle-icon {
+            background-color: $th-subdued-hover-color; // this changes the background, ie the grey stripe.
+            .toggle-inner {
+                background-color: $th-subdued-color; // this changes the backgroundcolor of the toggle dot.
+            }
+        }
+        .toggle-ios.toggle-checked .toggle-icon, .toggle-wp.toggle-checked .toggle-icon, .toggle-md.toggle-checked .toggle-icon{
+            background-color: $th-subdued-inverse-color;
+        }
+        .toggle-wp.toggle-checked .toggle-icon{
+            border-color: $th-subdued-inverse-color;
+        }
+        .chip {
+            background-color: $th-link-color;
+        }
+        .chip .label{
+            font-size: 1.2em;
+            color: $th-link-inverse-color;
+            background-color: $th-link-color;
+
+        }
+        auto-complete ul {
+            background: $th-bgcolor;
+        }
+        auto-complete li:hover {
+            background: $th-text-hover-color;
+        }
+        .progress-outer {
+            background-color: $th-subdued-color;
+            border-color: $th-subdued-hover-color;
+        }
+        .progress-inner {
+            color: $th-text-inverse-color;
+            background-color: $th-text-color;
+        } 
+        .chatbox {
+            border: 1px solid $th-text-color;
+        }
+        .card-md, .card-wp, .card-ios {
+                // box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 1px $th-text-color;
+                box-shadow: 0px 1px 1px 1px rgba($th-text-color, 0.2);
+        }
+        
+        .profileHeader, .profileHeader h6 {
+            background-color: $th-toolbar-color ;
+             color: $th-toolbar-text-color ;
+        }
+        .chatbox-right {
+           color: $th-link-inverse-color;
+            background-color: $th-link-color;
+        }
+
+        @media screen and (min-width: 0px) {
+            .bg-cover-page{
+                &::after {
+                    background: url("../assets/imgs/bg_low/"+$th-bg-img) no-repeat;
+                    background-size: cover;
+                }
+            }
+        }
+        @media screen and (min-width: 400px) {
+            .bg-cover-page{
+                &::after {
+                    background: url("../assets/imgs/bg_high/"+$th-bg-img) no-repeat;
+                    background-size: cover;
+                }
+            }
+        }
+
+        
+        
+    }
+}

@@ -14,3 +14,194 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+@import '../theme/_theme.generic';
+
+// @include app-theme($theme-name, $th-bgcolor, $th-text-color,$th-text-inverse-color, 
+    // $th-text-hover-color , $th-link-color,$th-link-inverse-color,$th-link-hover-color, 
+    // $th-subdued-tab-color, $th-tab-color, $th-tab-border, $th-toolbar-color, 
+    // $th-toolbar-border, $th-toolbar-text-color, $th-menu-text-color, $th-menu-color, $th-menu-hover-color, 
+    // $th-subdued-color, $th-subdued-inverse-color, $th-subdued-hover-color, $th-bg-img);
+
+@include app-theme(greenery, white,black,white, 
+    #303030, #009689, white, #006d62, 
+    #99E2B7, #22C064, #22C064, #22C064, 
+    #22C064, white, white, #22C064, white, 
+    #8c8c8c, #212121, #B2B2B2, "4.jpg");
+@include app-theme(greenblue, white,black,white, 
+    #303030, #4f7289, white, #303030, 
+    #C7C7C7, #3A617B, #3A617B, #4f7289, 
+    #4e7fa0, white, white, #3A617B, white, 
+    #8c8c8c, #212121, #B2B2B2, "4.jpg");
+@include app-theme(default, white,black,white, 
+    #303030, #327eff, white, #3D8CFF, 
+    #8c8c8c, #f8f8f8, #b2b2b2, #f8f8f8, 
+    #b2b2b2, #424242, #424242, #f8f8f8, #424242, 
+    #8c8c8c, #212121, #B2B2B2, "4.jpg");
+@include app-theme(insta, white,black,white, 
+    #606060, #327eff, white, #3D8CFF, 
+    #8c8c8c, white, #424242, white, 
+    #b2b2b2, #424242, #424242, white, #424242, 
+    #B2B2B2, #212121, #8c8c8c, "4.jpg");
+@include app-theme(tinder, white,#fc5353, white, 
+    #303030 , #FE6263,white,#E74D4D, 
+    #f7a5a5, #212121, #E74D4D, #FE6263, 
+   #E74D4D,  white, white, #212121, white, 
+    #f9d6d6, black, #B2B2B2, "4.jpg");
+@include app-theme(sunset, #FE6263,white, black, 
+    #303030 , #f9caca,black, #f7b4b4, 
+    #f49a9a, #E74D4D, #E74D4D, #FE6263, 
+   #E74D4D, white, white, #212121, white, 
+    #f9d6d6, black, #B2B2B2, "4.jpg");
+@include app-theme(deepblue, white, #297FB8, white, 
+    #0973b5 , #404143 , #ECF0F1, #656567,
+    #B1D3E6, #4290C1, #4290C1, #297FB8, 
+    #0973b5, white,white, #297FB8, white, 
+    #8c8c8c, #212121, #B2B2B2, "4.jpg");
+@include app-theme(dark, #191919,white,black, 
+    #387ef5, white, black, #387ef5,
+    #666, #303030, #191919, #212121, 
+    #222, white,white, #191919, white, 
+    #8c8c8c, black, #666, "4.jpg");
+@include app-theme(slack, white,#211620,white, 
+    #303030, #4e394c, white, #211620, 
+    #C9BDC9, #F4F5F7, #C7C7C7, white, 
+   #C7C7C7,  #896f87, white, #4E394C, white, 
+    #B2B2B2, black, #8c8c8c, "4.jpg");
+
+//to check if needed
+
+.card-md, .card-wp, .card-ios {
+    background-color: transparent;
+}
+
+.removeTextTransform {
+  text-transform: none;
+}
+.avatar {
+    border-radius: 100%;
+    position: absolute;
+    max-width: 100%;
+    height: auto;
+}
+.tabs-wp .tab-button, .tabs-ios .tab-button, .tabs-md .tab-button-text {
+    font-size: 1rem;
+}
+.tabs-md .tab-button-icon, .tabs-ios .tab-button-icon, .tabs-wp .tab-button-icon {
+    font-size: 2.2rem;
+    height: 2.2rem;
+    min-width: 2.2rem;
+}
+
+
+//Sign up and Login forms
+.gridForm .item-block.nolines .item-inner  {
+    border-width: 0;
+}
+.gridForm .item-block.ng-invalid .item-inner, .gridForm .item-input.ng-invalid.ng-touched:not(.input-has-focus):not(.item-input-has-focus) .item-inner {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+.gridForm .item-block {
+    padding: 0;
+    margin: 0;
+}
+.showPassword  {
+    align-self: center;
+}
+.fineprint ion-label{
+    // color: color($colors, lightgrey);
+    font-size: 1.1rem !important;
+}
+
+//List bug fix for lines
+
+ion-item .input-wrapper, ion-list-header .input-wrapper{
+    margin-bottom: 1px;
+}
+// for PIc Upload
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.inputfile + label {
+    cursor: pointer; /* "hand" cursor */
+    font-size: 1.4rem;
+    height: 4rem;
+    font-weight: 500;
+    background-color: transparent;
+    display: inline-block;
+    text-transform: uppercase;
+    padding: 0.8em;
+    margin: 0.4rem 0.2rem;
+}
+.inputfile + label:hover:not(.disable-hover) {
+    font-weight: 600;
+    background-color: rgba(158, 158, 158, 0.1);
+}
+.inputfile + label ion-icon {
+    font-size: 1.4em;
+    line-height: .67;
+    pointer-events: none;
+    padding-right: 0.3em;
+}
+
+
+.inputfile + label * {
+    pointer-events: none;
+}
+.profilePicEmptyContainer {
+    display: none;
+    height: 0;
+}
+.profilePicContainer {
+    position: relative;
+    height:350px;
+    width: 100%;
+    overflow: hidden;
+}
+.profilePicContainer img {
+    max-width: 100%; 
+    // height: auto;
+    height:100%; 
+    width:auto;
+    overflow: hidden;
+}
+//end Pic Upload
+
+//error messages
+.text-md-danger, .text-ios-danger, .text-wp-danger {
+    font-size: 1.3rem;
+} 
+
+// style for BG cover pages
+.bg-cover-page {
+    background-color: #fff;
+    &::after {
+      content: "";
+      background: url("../assets/imgs/bg_low/4.jpg") no-repeat;
+      background-size: cover;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      position: absolute;
+      z-index: 0;
+    }
+}
+
+ion-select.smallerLabel {
+    max-width: 70%;
+}
+
+.headerAvatar {
+    width: 40px;
+    display: inline-block; 
+    height: 40px;
+    border-radius: 50%;
+}

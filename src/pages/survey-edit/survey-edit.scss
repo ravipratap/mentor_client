@@ -1,0 +1,25 @@
+page-survey-edit {
+    .slide-zoom {
+        text-align: left;
+    }
+
+    .footer {
+        position:fixed;
+        bottom:30px;
+    }
+    .slide-box {
+        // height: 100vh;
+        height: calc(100vh - 56px)
+    }
+    .busyForm  .item-md , .busyForm  .item-ios, .busyForm  .item-wp  {
+        font-size: 1.4rem;
+    }
+    .busyForm ion-label {
+        min-width: 15%
+    }
+
+    .busyForm  auto-complete ion-label {
+        min-width: 1%
+    } 
+
+}

@@ -1,0 +1,6 @@
+<ul class="rating" (keydown)="onKeyDown($event)">
+  <li *ngFor="let starIndex of starIndexes" tappable (click)="rate(starIndex + 1)">
+    <ion-icon [name]="getStarIconName(starIndex)" large>
+    </ion-icon>
+  </li>
+</ul>

@@ -1,0 +1,100 @@
+<!--
+  Generated template for the SiteListPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle >
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Manage Sites</ion-title>
+    <ion-buttons end right>
+      <button ion-button icon-only (click)="addSite()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding> 
+  <ion-searchbar
+    [showCancelButton]="true"
+    (ionInput)="onSearchInput($event)"
+    (ionCancel)="onSearchCancel($event)">
+  </ion-searchbar>
+  <ion-item *ngIf="!hiddenSearchLoader">
+    <ion-spinner> </ion-spinner> Finding sites..
+  </ion-item>
+  <ion-row>
+    <ion-col col-12 col-xs-12 col-md-12 col-lg-6 col-xl-4  *ngFor="let site of sites; let siteIndex = index">
+      <ion-card >
+        <ion-item>
+          <h2>{{site.profile.company}}</h2>
+          <p>{{site.profile.category}}</p>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="funnel" item-left large ></ion-icon>
+          <h2>{{site.license.status}}</h2>
+          <p *ngIf="site.license.activation" >{{site.license.activation | date:"dd/MM/yy" }}</p>
+        </ion-item>    
+        <ion-item>
+          <ion-icon name="at" item-start large></ion-icon>
+          <h2 *ngIf="site.profile.domain">{{site.profile.domain}} (domain)</h2>
+          <p *ngFor="let email_domain of site.profile.email_domains">{{email_domain}}</p>
+        </ion-item>
+        <ion-item *ngIf="site.license.plan">
+          <ion-icon name="bookmark" item-left large ></ion-icon>
+          <h2 *ngIf="site.license.plan">{{site.license.plan}} Plan</h2>
+          <p *ngIf="site.license.users">{{site.license.users}} users</p>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="calendar" item-left large ></ion-icon>
+          <h2>{{site.license.start | date:"dd/MM/yy" }} <span *ngIf="site.license.end" >- {{site.license.end | date:"dd/MM/yy" }}</span></h2>
+        </ion-item>       
+      
+        <ion-item>
+          <span item-left>18 min</span>
+          <span item-left>(2.6 mi)</span>
+          <button ion-button icon-left clear item-end>
+            <ion-icon name="navigate"></ion-icon>
+            Start
+          </button>
+        </ion-item>
+
+        <ion-list>
+            <button ion-item  (click)="manageAdmins(site)">
+              Manage Site Admins
+            </button>  
+          </ion-list> 
+        <ion-row>
+          <ion-col>
+            <button ion-button icon-left clear small (click)="editSite(site, siteIndex)">
+              <ion-icon name="settings"></ion-icon>
+              <div>Edit</div>
+            </button>
+          </ion-col>
+          <ion-col>
+            <button ion-button icon-left clear small (click)="basicSetup(site)">
+              <ion-icon name="text"></ion-icon>
+              <div>Theme</div>
+            </button>
+          </ion-col>
+          <ion-col center text-center>
+              <button ion-button icon-left clear small (click)="managePrograms(site)">
+                <ion-icon name="book"></ion-icon>
+                <div>Programs</div>
+              </button>
+          </ion-col>
+        </ion-row>
+      </ion-card> 
+    </ion-col>
+    <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreSites())" *ngIf="toBeLoaded">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-row>
+</ion-content>

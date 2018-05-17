@@ -1,0 +1,332 @@
+For Prod:
+In app.component. set the server url, 
+in auth.ts, uncomment unauthorized method
+
+//create node app with typescript support
+https://github.com/Microsoft/TypeScript-Node-Starter
+https://github.com/sahat/hackathon-starter
+git clone --depth=1 https://github.com/Microsoft/TypeScript-Node-Starter.git mentor_server
+http://blog.programster.org/getting-started-with-node-typescript
+npm install passport-jwt --save
+npm install @types/passport-jwt --save-dev
+// do the above for "cors" : "*",
+    "jsonwebtoken" : "*",
+    "passport-jwt": "*"
+
+npm build
+npm run watch-debug
+
+Clean up scss directories in package.json
+// "build-sass": "node-sass src/public/css/main.scss dist/public/css/main.css",
+// "watch-sass": "node-sass -w src/public/css/main.scss dist/public/css/main.css",
+// "build": "npm run build-sass && npm run build-ts && npm run tslint && npm run copy-static-assets",
+// "watch": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run watch-node\"",
+// "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run serve-debug\""
+
+//running HTTPS Node Server
+https://stackoverflow.com/questions/40484451/node-auto-reload-code-on-https
+openssl genrsa -out key.pem
+openssl req -new -key key.pem -out csr.pem
+openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
+rm csr.pem
+
+
+// Create Ionic app
+ionic start mentor_client blank
+
+//adding proxy https support for using GPS on mobile browser
+//Install brew
+$ gcc --version
+
+ $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+ $brew update.
+ $ brew install openssl #go package not required possiblly so removed
+
+https://www.petrelli.biz/2017/07/12/ionic-serve-how-to-connect-over-https-to-use-reserved-html5-methods-such-as-geolocation/
+
+
+//create pages
+ionic g page menu
+ionic g page tabs
+ionic g page profile
+ionic g page chat-list
+ionic g page chat
+ionic g page program-list
+ionic g page program
+ionic g page answers
+ionic g page matches
+ionic g page signin
+ionic g page signup
+ionic g page tour
+ionic g page invite
+ionic g page configure
+ionic g page settings
+ionic g page profile-questions
+ionic g page pledges
+
+ionic g provider config
+ionic g provider auth
+
+//in app.component change the following line
+rootPage:string = "MenuPage";
+
+//https://ionicframework.com/docs/storage/
+ionic cordova plugin add cordova-sqlite-storage
+npm install --save @ionic/storage
+
+// Add android platform by going in mentorapp 
+ionic cordova platform add ios
+ionic cordova platform add android
+
+
+
+//Authorization
+https://blog.angular-university.io/angular-jwt-authentication/
+https://forum.ionicframework.com/t/how-to-handle-case-where-user-is-still-authenticated-they-can-skip-login/92563/7
+this.app.getRootNav().setRoot(BasePage);
+https://forum.ionicframework.com/t/determining-if-app-is-entered-via-deep-linking-in-root-component/87834/3
+https://www.joshmorony.com/link-to-pages-via-urls-with-deep-linking-in-ionic/
+https://devdactic.com/ionic-auth-guards/
+
+//Now link all pages using menu and tabs
+//Use split menu for PWA
+
+
+//add menu button on all pages, u can hide for platform with showWhen="core"
+<button ion-button menuToggle >
+  <ion-icon name="menu"></ion-icon>
+</button>
+
+//Theming guides
+https://market.ionic.io/themes/instaclone-ionic-instagram-theme
+https://github.com/candelibas/instaclone
+http://www.discoversdk.com/blog/custom-themes-in-ionic-2-integrating-different-themes-in-application
+https://github.com/DaftMonk/mean-chat
+https://github.com/ionic-team/ionic/blob/master/src/themes/ionic.theme.dark.scss
+
+// backgrounds
+http://www.webdesigndev.com/backgrounds-for-apps-websites/
+
+//in app.scss, import themes 
+@import '../theme/_theme.generic';
+//import file for global variable in app.module and add it as provider
+import { AppState } from './app.global';
+//in app.html, set div class based on global variable
+<div class="{{global.state['theme']}} themeGlobal">
+//in app.component.ts set default theme
+this.global.set('theme', 'theme-insta');
+//in variables.scss, set max width
+$split-pane-md-side-max-width: 250px;
+
+//Theming
+https://market.ionic.io/themes/instaclone-ionic-instagram-theme
+https://github.com/candelibas/instaclone
+http://www.discoversdk.com/blog/custom-themes-in-ionic-2-integrating-different-themes-in-application
+https://github.com/DaftMonk/mean-chat
+https://github.com/ionic-team/ionic/blob/master/src/themes/ionic.theme.dark.scss
+
+//Adding charts
+https://www.joshmorony.com/adding-responsive-charts-graphs-to-ionic-2-applications/
+
+forms
+https://www.joshmorony.com/advanced-forms-validation-in-ionic-2/
+https://www.joshmorony.com/creating-a-sliding-introduction-component-in-ionic-2/
+https://forum.ionicframework.com/t/custom-validation-solved/87696
+https://login.sendpulse.com/settings/
+https://medium.com/aviabird/complete-angular2-guide-reactive-forms-in-depth-part-1-21a8e2428904
+https://forum.ionicframework.com/t/ion-checkbox-setting-values-and-using-as-an-array/87118/2
+
+
+Star Rating component
+https://www.joshmorony.com/build-a-simple-progress-bar-component-in-ionic-2/
+https://github.com/andrucz/ionic2-rating
+https://stackoverflow.com/questions/45659742/angular4-no-value-accessor-for-form-control
+
+Auto Complete component
+https://github.com/kadoshms/ionic2-autocomplete
+adding debounce
+https://alligator.io/angular/real-time-search-angular-rxjs/
+
+For Environmental variables
+install https://github.com/ionic-team/ionic-app-scripts
+instructions: https://github.com/gshigeto/ionic-environment-variables
+
+Reporting
+https://play.google.com/store/apps/details?id=com.amazon.sellermobile.android&hl=en
+https://play.google.com/store/apps/details?id=com.asana.app&hl=en
+https://play.google.com/store/apps/details?id=com.hirevue.candidate.generic&hl=en
+https://play.google.com/store/apps/details?id=com.salesforce.chatter&hl=en
+https://play.google.com/store/apps/details?id=com.sitrion.one
+https://docs.mongodb.com/manual/core/map-reduce/
+https://docs.mongodb.com/manual/core/aggregation-pipeline/
+https://www.joshmorony.com/adding-responsive-charts-graphs-to-ionic-2-applications/
+Campaign
+https://stackoverflow.com/questions/4662530/how-should-i-implement-this-schema-in-mongodb
+
+
+//start mongo db
+/mnt/installs/mongodb/bin/mongod --dbpath /mnt/installs/mongodb/data/db/ --logpath /mnt/installs/mongodb/log/mongo.log --logappend
+mongod --config /mnt/installs/mongodb/mongod.conf
+
+//mongod.conf
+systemLog:
+  destination: file
+  path: /mnt/installs/mongodb/log/mongo.log
+  logAppend: true
+storage:
+  dbPath: /mnt/installs/mongodb/data/db/
+net:
+  bindIp: 127.0.0.1
+
+// end mongod.conf
+
+//open mongo shell to test
+/mnt/installs/mongodb/bin/mongo
+
+// setting basic REST service
+
+//import all dependencies in app.js and listen on import
+
+//create config directory and add a file basic-config.js. 
+//put database and jwt config here
+
+//import config in app.js
+
+
+//run nodemon
+nodemon
+
+
+//Set Middle wares
+//Enable cors in app.js to allow authentication requests from other domains
+app.use(cors());
+//Enable body parser: Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
+// parse application/json 
+app.use(bodyParser.json())
+//set static folders
+app.use(express.static(path.join(__dirname,'public')));
+
+
+//Set routes in seperate files
+create a directory routes and create file for rest service there
+create routes and export
+const express = require('express');
+const router = express.Router();
+
+module.exports=router;
+
+//Create folder for models
+create schema and export model
+const UserSchema =mongoose.Schema({
+const User= module.exports = mongoose.model('User','UserSchema'); 
+// Add methods to User
+module.exports.getUserById = (id, callback) => {}
+
+//Use bcrypt to hash password and compare in model
+
+//Create requests with Postman
+entering URL, add header as Content-Type: application/json and add body as json
+{"name" : "ram","email" : "ram@gmail.com","mobile" : "2222","password" : "1234"}
+
+//bring in passport, initialize and configure JWT strategy
+app.use(passport.initialize());
+require('./config/passport')(passport);
+https://jonathas.com/token-based-authentication-in-nodejs-with-passport-jwt-and-bcrypt/
+
+
+
+
+
+tinder slider
+https://devdactic.com/ionic-2-tinder-cards/
+https://github.com/ksachdeva/angular2-swing
+//Error: Cannot read property 'replace' of undefined when running IOS simulator
+cd platforms/ios/cordova/
+npm install ios-sim
+
+If you run this tutorial on iOS, make sure to add the NSAppTransportSecurity to the plist of your project like described on Stack overflow.
+https://stackoverflow.com/questions/30731785/how-do-i-load-an-http-url-with-app-transport-security-enabled-in-ios-9
+
+//Env variables
+https://github.com/ionic-team/ionic-app-scripts/issues/762
+http://roblouie.com/article/296/ionic-2-environment-variables-the-best-way/
+
+
+//Adding GeoLocation
+$ ionic cordova plugin add cordova-plugin-geolocation --variable GEOLOCATION_USAGE_DESCRIPTION="To locate you"
+$ npm install --save @ionic-native/geolocation
+
+
+
+//for camera: file upload
+https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/
+http://www.bentedder.com/upload-images-angular-4-without-plugin/
+https://stackoverflow.com/questions/43444440/how-to-include-a-file-upload-control-in-an-angular2-reactive-form
+https://stackoverflow.com/questions/12368910/html-display-image-after-selecting-filename
+
+//IOS tricks for camera
+https://forum.ionicframework.com/t/native-camera-plugin-is-crashing-app-on-iphone-7-6-5-ios-11-1-2/113025/4
+
+Add the following lines to the config.xml:
+    <allow-navigation href="*"/>
+    <allow-navigation href="file://*/*" />
+    <allow-intent href="*"/> 
+    <access origin="*"/>
+
+And also set the Content-Security-Policy in index.html as
+<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+Removed above line for ios preview
+
+//Ionic Image Upload and Management with Node.js – Part 1: Server
+https://devdactic.com/ionic-image-upload-nodejs-server/
+
+ionic cordova plugin add cordova-plugin-camera
+ionic cordova plugin add cordova-plugin-file-transfer
+npm install --save @ionic-native/camera @ionic-native/file-transfer
+
+//create uploads directory
+ npm install --save multer
+
+//Graphics Magick and image magick for node
+https://www.npmjs.com/package/gm
+brew install imagemagick
+brew install graphicsmagick
+
+//for file transfer
+ionic cordova plugin add cordova-plugin-file-transfer
+npm install --save @ionic-native/file-transfer
+//add to app module import { FileTransfer} from '@ionic-native/file-transfer';
+
+ionic cordova plugin add cordova-plugin-camera
+npm install --save @ionic-native/camera
+Add camera to app module
+
+
+Adding Facebook login. First for web
+https://www.npmjs.com/package/angular4-social-login
+https://github.com/abacritt/angularx-social-login
+kabita.bharali21@hotmail.com txxxx3
+Copy code from above and put it authorize
+https://medium.com/@mcflyDev/angular-2-or-4-import-google-contacts-d0ffb13d8626
+
+FOr Facebook native plugin
+https://www.djamware.com/post/59ad3a0c80aca768e4d2b135/login-with-ionic-3-and-cordova-native-facebook-connect-plugin
+ionic cordova plugin add cordova-plugin-facebook4 --variable APP_ID="307499993069266" --variable APP_NAME="Praise-Dev"
+npm install --save @ionic-native/facebook
+
+https://www.djamware.com/post/59094a2280aca7414e78a63d/ionic-3-google-plus-authentication-tutorial
+ionic cordova plugin add cordova-plugin-googleplus --variable REVERSED_CLIENT_ID=com.googleusercontent.apps.597492725536-n38f4669lv9326aiei3iu1nluvie2gir
+
+https://www.djamware.com/post/5971421e80aca7414e78a658/ionic-3-angular-4-and-cordova-linkedin-authentication-tutorial
+ionic cordova plugin add cordova-plugin-linkedin --variable APP_ID=4803224
+
+Validating access token on server side.
+https://stackoverflow.com/questions/5406859/facebook-access-token-server-side-validation-for-iphone-app
+https://developers.google.com/identity/sign-in/web/backend-auth
+
+
+
+
+// icon and splash screen
+http://www.techexceed.com/generating-icon-splash-screen-ionic-3/

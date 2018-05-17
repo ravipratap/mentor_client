@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "597492725536",
+    "project_id": "firebase-mentor-dev"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597492725536:android:30350e94c07dfd90",
+        "android_client_info": {
+          "package_name": "com.mentorrank"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "597492725536-sjivbfcko3s3mejrildku01cj6eso19p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mentorrank",
+            "certificate_hash": "7428dcc8f56fb7c97791462d06db27081f4544ad"
+          }
+        },
+        {
+          "client_id": "597492725536-vl56ddb38gfc15v8391n5b5sul3v1chc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4wo5rSzCHgoQz6UnviAQaH-cRkj3hhEA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

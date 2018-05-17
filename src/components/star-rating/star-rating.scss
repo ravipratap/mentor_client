@@ -1,0 +1,15 @@
+star-rating {
+    ul.rating li {
+        display: inline;
+        border: 0px;
+        background: none;
+        padding: 5px 10px;
+      }
+      ul.rating li ion-icon {
+        font-size: 2.5em;
+      }
+
+      ul.rating {
+        padding-left: 0;
+      }
+}
