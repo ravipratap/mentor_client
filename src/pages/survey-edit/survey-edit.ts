@@ -199,7 +199,7 @@ export class SurveyEditPage {
         this.dismissLoading();
         this.save(true);
       }
-    }, 20);
+    }, 800);
 
   }
   //For Picture

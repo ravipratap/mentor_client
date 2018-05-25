@@ -330,3 +330,35 @@ https://developers.google.com/identity/sign-in/web/backend-auth
 
 // icon and splash screen
 http://www.techexceed.com/generating-icon-splash-screen-ionic-3/
+
+Cordova steps for ios and android
+
+easy_install six
+npm install -g ios-deploy
+xcode comand line tools install and set in preferences>>locations>> command line tool
+echo export "JAVA_HOME=/Applications/Android\ Studio.app/Contents/jre/jdk/Contents/Home/" >> ~/.bash_profile
+export PATH=${JAVA_HOME}/bin:$PATH
+brew install gradle
+
+
+Add this to the config.xml file
+
+<platform name="android">
+<config-file parent="/resources" target="./res/values/strings.xml">
+    <string name="fb_app_id">1234</string>
+    <string name="fb_app_name">foobar</string>
+</config-file>
+...
+
+https://github.com/zyra/cordova-plugin-linkedin/issues/44
+i found an solution, it is work for me:
+just change the following setting in cordova-plugin-linkedin/plugin.xml
+
+<resource-file src="src/android/linkedin.jar" target="libs/linkedin.jar" reference="true"/>
+<lib-file src="src/android/linkedin.jar"/>
+
+only then add platform android
+
+
+//list of android devices
+~/Library/Android/sdk/platform-tools/adb devices
