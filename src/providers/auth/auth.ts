@@ -741,7 +741,7 @@ linkedInSignOut(): Promise<any> {
 
   signin(user:any){
   let headers = new HttpHeaders().set('Content-Type', 'application/json');
-  console.log("logging in user");
+  console.log("logging in user", this.global.state['ENDPOINT']+'/users/signin');
   // console.log(JSON.stringify(user));
     if(this.plt.is('cordova')){
       user.isApp = true;
