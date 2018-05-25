@@ -110,7 +110,7 @@ export class AuthProvider {
 
   populateUserForFB = (res, token): any => {
     let socialUser: any= { login: {}, sign: {}, profile: { intro: {}, age_range: {} }, picture: {}};
-    console.log("profile from FB: ", JSON.stringify(res)); 
+    console.log("profile from FB: ", JSON.stringify(res));
     socialUser.login.facebook = res.id;
     socialUser.login.email = res.email;
     socialUser.login.email_verified = true;// res.verified;
@@ -186,40 +186,42 @@ export class AuthProvider {
         this.loadScript("FACEBOOK",  
           "//connect.facebook.net/en_US/sdk.js", () => {
             // console.log('FB init started'); 
-            FB.init({
-              appId: FB_APPID,
-              autoLogAppEvents: true,
-              cookie: true,
-              xfbml: true,
-              version: 'v2.9'
-            });
-            // FB.AppEvents.logPageView(); #FIX for #18
-            FB.getLoginStatus(function (response: any) {
-              if (response && response.status === 'connected') {
-                let authResponse = response.authResponse;
-                FB.api('/me?fields=name,email,picture.type(large),first_name,last_name,gender,verified,age_range,link', (res: any) => {
-                  if (res && !res.error) {
-                    that.fbSignedIn=true;
-                    let socialUser= that.populateUserForFB(res, authResponse.accessToken);
-                    // socialUser.id = res.id;
-                    // socialUser.name = res.name;
-                    // socialUser.email = res.email;
-                    // socialUser.photoUrl = "https://graph.facebook.com/" + res.id + "/picture?type=normal";
-                    // socialUser.firstName = res.first_name;
-                    // socialUser.lastName = res.last_name;
-                    // socialUser.provider = "FACEBOOK";
-                    // socialUser.authToken = authResponse.accessToken;
-                    resolve(socialUser);
-                  } else {
-                    console.log("not getting profile from FB");
-                    resolve();
-                  }
-                });
-              } else {
-                // console.log("not logged in FB");
-                resolve();
-              }
-            });
+            if(window["FB"] && FB) {
+              FB.init({
+                appId: FB_APPID,
+                autoLogAppEvents: true,
+                cookie: true,
+                xfbml: true,
+                version: 'v2.9'
+              });
+              // FB.AppEvents.logPageView(); #FIX for #18
+              FB.getLoginStatus(function (response: any) {
+                if (response && response.status === 'connected') {
+                  let authResponse = response.authResponse;
+                  FB.api('/me?fields=name,email,picture.type(large),first_name,last_name,gender,verified,age_range,link', (res: any) => {
+                    if (res && !res.error) {
+                      that.fbSignedIn=true;
+                      let socialUser= that.populateUserForFB(res, authResponse.accessToken);
+                      // socialUser.id = res.id;
+                      // socialUser.name = res.name;
+                      // socialUser.email = res.email;
+                      // socialUser.photoUrl = "https://graph.facebook.com/" + res.id + "/picture?type=normal";
+                      // socialUser.firstName = res.first_name;
+                      // socialUser.lastName = res.last_name;
+                      // socialUser.provider = "FACEBOOK";
+                      // socialUser.authToken = authResponse.accessToken;
+                      resolve(socialUser);
+                    } else {
+                      console.log("not getting profile from FB");
+                      resolve();
+                    }
+                  });
+                } else {
+                  // console.log("not logged in FB");
+                  resolve();
+                }
+              });
+            }
           }
         );
       }
@@ -687,7 +689,7 @@ linkedInSignIn(fromUserSignIn?: boolean): Promise<SocialUser> {
             resolve();
           });
         } else {
-          if(fromUserSignIn || (IN.User && IN.User.isAuthorized())){
+          if(fromUserSignIn || (window["IN"] && IN && IN.User && IN.User.isAuthorized())){
             IN.User.authorize(function(){
                 IN.API.Raw('/people/~:(id,first-name,last-name,email-address,picture-urls::(original),headline,location,industry,positions,num-connections,public-profile-url)').result(function(res: any){
                     console.log("profile from LinkedIn",res);
@@ -715,7 +717,7 @@ linkedInSignOut(): Promise<any> {
           this.linkedin.logout();
           that.linkedInSignedIn = false;
           resolve();
-        } else {
+        } else if(IN){
           IN.User.logout(function(){
             that.linkedInSignedIn = false;  
             resolve();
@@ -773,13 +775,13 @@ linkedInSignOut(): Promise<any> {
     });
       
   }
-  getProfile(id?: string) {
+  getProfile(id?: string, program?: string) {
       return Observable.fromPromise(this.loadTokenFromStorage()).mergeMap(token => {
         let headers = new HttpHeaders().set('Content-Type', 'application/json');
         headers = headers.append('Authorization', token);
         let params = new HttpParams()
         if(id) params.set("_id", id);
-        // if(search) { params = params.append("search", search); } 
+        if(program) { params = params.append("program", program); } 
         // if(siteId) { params = params.append("siteId", siteId); } 
         // console.log("headers", headers);
         // console.log("params", JSON.stringify(params));
@@ -1047,6 +1049,11 @@ linkedInSignOut(): Promise<any> {
       return img_path;
     }
   }
+
+  getProfileQuestionCategory = () => {
+    const categories = [ "Current Location",  "Skills", "ExpInYrs", "Job Level", "Function", "Industry", "Age", "Gender", "Background", "Photo", "Contact", "Position", "Education"];
+    return categories
+  };
 
   getYearArray() {
     const yearArray: number[] = [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 

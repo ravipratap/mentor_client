@@ -25,12 +25,14 @@ export class SurveyQuestionPage {
   submitted = false;
   questionForm: FormGroup;
   surveyCategory: string;
-  siteConfig: any; 
+  siteConfig: any;
+  roles: string[]; 
 
   formErrors = {
     'question': '',
     'mentor_question': '',
-    'category': ''
+    'category': '',
+    'roles': ''
   };
   validationMessages = {
     'question': {
@@ -42,7 +44,11 @@ export class SurveyQuestionPage {
     'category': {
       'required' : 'Select category of question.',
       'choicePresent' : 'Enter choices for the question.'
+    },
+    'roles': {
+      'required' : 'Atleast one role is required.'
     }
+
   };
 
   constructor(
@@ -70,6 +76,11 @@ export class SurveyQuestionPage {
   }
 
   initForm() {
+    if(this.siteConfig && this.siteConfig.config["roles"] && this.siteConfig.config["roles"].length > 0 ) {
+      this.roles = this.siteConfig.config["roles"]
+    } else {
+      this.roles = ["Mentor", "Mentee"];
+    }
     let choices = new FormArray([]); 
     this.questionForm = this.formBuilder.group({
       question: [this.question? this.question.question: "", Validators.required],
@@ -79,6 +90,7 @@ export class SurveyQuestionPage {
       mandatory: [this.question? this.question.mandatory: false],
       other_choice: [this.question && this.question.other_choice? this.question.other_choice: false],
       placeholder: [""],
+      roles: [this.question && this.question.roles? this.question.roles: this.roles, Validators.required],
       choices: choices
     });
 
@@ -272,8 +284,9 @@ export class SurveyQuestionPage {
       this.question.category = this.questionForm.controls.category.value;
       this.question.mandatory = this.questionForm.controls.mandatory.value;
       this.question.other_choice = this.questionForm.controls.other_choice.value;
+      this.question.roles = this.questionForm.controls.roles.value;
       if(this.questionForm.controls.placeholder.value) {
-        this.question.placeholder = this.questionForm.controls.placeholder.value;
+        this.question.placeholder = this.question.category != "Role" ? this.questionForm.controls.placeholder.value:undefined;
       }
       let choices: any[] =[];
       let choiceIndex = 0;
@@ -304,7 +317,7 @@ export class SurveyQuestionPage {
       }
       
       this.question.choices=choices;
-      console.log(this.question);
+      console.log("this.question", this.question);
       this.navCtrl.pop().then(() => {
         this.navParams.get('callback')({
           question: this.question,

@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
 import { StarRatingComponent } from './star-rating/star-rating';
 import { AutoCompleteComponent } from './auto-complete/auto-complete';
+import { IonicModule } from 'ionic-angular';
 @NgModule({
 	declarations: [
-	// 	StarRatingComponent,
+		StarRatingComponent,
 	// AutoCompleteComponent
 ],
-	imports: [],
+	imports: [IonicModule],
 	exports: [
-	// 	StarRatingComponent,
+		StarRatingComponent,
 	// AutoCompleteComponent
 ]
 })

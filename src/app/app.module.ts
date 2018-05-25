@@ -17,9 +17,11 @@ import { LinkedIn } from '@ionic-native/linkedin';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { Camera } from '@ionic-native/camera';
 import { FileTransfer } from '@ionic-native/file-transfer';
+// import { StarRatingComponent } from '../components/star-rating/star-rating';
 @NgModule({
   declarations: [
-    MyApp
+    MyApp,
+    // StarRatingComponent
   ],
   imports: [
     BrowserModule,

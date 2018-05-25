@@ -9,7 +9,7 @@
  
     <ion-toolbar>
         <ion-buttons start left>
-          <button ion-button icon-only navPop *ngIf="inEditMode || (!inEditMode && survey && survey.profile.category != 'Signup' && survey.profile.category != 'PostSignup')">
+          <button ion-button icon-only navPop *ngIf="cancelEnabled">
             <ion-icon name="close"></ion-icon>
           </button>
     
@@ -43,7 +43,7 @@
 <ion-content padding>
   <div *ngIf="surveyForm">
     <form [formGroup]="surveyForm" novalidate >
-      <ion-slides #surveySlider (ionSlideWillChange)="onSlideChangeStart($event)" formArrayName="questionArray">
+      <ion-slides #surveySlider (ionSlideWillChange)="onSlideChangeStart($event)" (ionSlideNextStart)="slideNextStart($event)" (ionSlidePrevStart)="slidePrevStart($event)" formArrayName="questionArray">
         <ion-slide *ngIf="inEditMode" [formGroup]="surveyForm">
             <ion-grid nopadding>
               <ion-row>
@@ -103,7 +103,7 @@
             </ion-grid>
         </ion-slide>
         <ion-slide *ngFor="let choice of surveyForm.controls['questionArray'].controls; let i = index" [formGroupName]="i" >
-            <ion-grid nopadding >
+            <ion-grid nopadding *ngIf="questions[i]">
                 <ion-row>
                     <button ion-button primary *ngIf="!inEditMode" (click)="this.navCtrl.setRoot('TabsPage')">
                         Open Tabs

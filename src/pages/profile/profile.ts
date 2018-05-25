@@ -264,20 +264,25 @@ export class ProfilePage {
   updateEducation = data => {
     this.user.education = data;
   };
-  editProgram = () => {
+  editProgram = (program:  any, i: number) => {
     this.navCtrl.push('SurveyEditPage', {
-      survey: this.user.contact.survey, 
-      surveyResponse: this.user.contact.surveyResponse,
+      survey: program.survey, 
+      surveyResponse: program.surveyResponse,
+      programIndex: i,
+      nonProfileEdit: true,
       callback: this.updateProgram
     });
   };
   updateProgram = data => {
-    this.user.contact = data
+    this.user.programs[data.programIndex].survey = data.survey;
+    this.user.programs[data.programIndex].surveyResponse = data.surveyResponse;
+    this.user.programs[data.programIndex].filteredAnswers =data.filteredAnswers;
+    console.log("this.user.programs[data.programIndex]", this.user.programs[data.programIndex]);
   };
 
   getProfile =(userSignedIn, params) => {
     this.showLoading();
-    this.auth.getProfile(params?params._id: undefined)
+    this.auth.getProfile(params?params._id: undefined, params?params.program: undefined)
     .subscribe( (data: any) => {
       if(data && data.user){
         this.user=data.user;

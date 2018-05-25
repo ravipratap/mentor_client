@@ -33,6 +33,7 @@ export class SurveyEditPage {
   @ViewChild('profilePic') profilePic;
   imageExists: boolean = false;
   hideLoader: boolean = true;
+  cancelEnabled: boolean = true;
   prevImage: any;
   currentImage: any;
   profileForm: FormGroup;
@@ -114,22 +115,27 @@ export class SurveyEditPage {
       this.site = params.site;
       this.program = params.program;
       this.surveyCategory = params.category;
-      this.surveyResponse = params.surveyResponse; 
+      this.surveyResponse = params.surveyResponse? JSON.parse(JSON.stringify(params.surveyResponse)): undefined; 
       this.inEditMode= params.inEditMode? true : false; // change to false
+      
       if(this.site){
         this.siteConfig = {config: this.site.config};
       } else {
         this.siteConfig = this.auth.getSiteConfig();
       }
       console.log("this.siteConfig.config[roles][0]", this.siteConfig.config["roles"]  && this.siteConfig.config["roles"].length > 0  ? this.siteConfig.config["roles"][0]: "Mentor");
+      
+      this.is_mentor = params.surveyResponse?params.surveyResponse.is_mentor: false;
+      this.role = params.surveyResponse?params.surveyResponse.role: undefined;
       if(params.survey){
         this.survey = params.survey;
-        this.questions = this.survey.questions;
+        this.initQuestionList();
         this.navTitle = this.survey.profile.navTitle;
         this.surveyCategory = this.survey.profile.category;
       }
-      this.is_mentor = params.surveyResponse?params.surveyResponse.is_mentor: false;
-      this.role = params.surveyResponse?params.surveyResponse.role: undefined;
+      if(!params.nonProfileEdit && this.survey && (this.survey.profile.category == 'Signup' || this.survey.profile.category == 'PostSignup')){
+        this.cancelEnabled = false;
+      }
     }
     if(!this.survey) this.auth.unauthorizedAccess();
     
@@ -144,7 +150,58 @@ export class SurveyEditPage {
     
     this.showNext = this.inEditMode? true: (this.questions.length > 1);
   }
-  
+  initQuestionList = () => {
+    this.questions = [];
+    this.survey.questions.forEach(question => {
+      if(this.inEditMode){
+        this.questions.push(question);
+      } else {
+        let addQ = true;
+        if(this.navParams.data.nonProfileEdit && this.auth.getProfileQuestionCategory().find(element => question.category == element)){
+          addQ = false;
+        } 
+        if(this.role && question.roles && question.roles.length > 0 && !question.roles.find(element => this.role == element)){
+          addQ = false;
+        } 
+        if(addQ){
+          this.questions.push(question);
+        }
+      }
+    });
+  }
+  clearFormArray = (formArray: FormArray) => {
+    while (formArray.length !== 0) {
+      formArray.removeAt(0);
+    }
+  }
+  resetForm = (next:boolean) => {
+    this.showLoading(); 
+    this.updateSurveyResponse();
+    console.log("controls", (<FormArray>this.surveyForm.controls['questionArray']).length);
+    this.clearFormArray((<FormArray>this.surveyForm.controls['questionArray']));
+    console.log("controls", (<FormArray>this.surveyForm.controls['questionArray']).length);
+    this.initQuestionList();
+    this.addQuestionsToForm();
+    this.surveySlider.update(1);
+    // console.log("controls", this.surveyForm.controls['questionArray']);
+    let roleIndex:number = this.questions.findIndex(element => element.category == "Role");
+    setTimeout(()=>{
+      if(roleIndex<this.questions.length-1){
+        let slideTo = roleIndex+1;
+        this.surveySlider.slideTo(slideTo, 0, false);
+        // console.log("sliding to "+slideTo, this.surveySlider.length());
+        this.showNext = slideTo < (this.questions.length -1) ;  
+        this.showPrev = !this.surveySlider.isBeginning();
+        this.updateNavTitle(this.surveySlider.getActiveIndex());
+        this.dismissLoading();
+        
+      } else {
+        this.dismissLoading();
+        this.save(true);
+      }
+    }, 20);
+
+  }
   //For Picture
   presentActionSheet() {
     let actionSheet = this.actionSheetCtrl.create({
@@ -240,13 +297,7 @@ export class SurveyEditPage {
       });
     }
     if ( this.questions) {
-      this.questions.forEach( ( question, index ) => {
-        if(this.surveyResponse && this.surveyResponse.answers && this.surveyResponse.answers[index] && this.surveyResponse.answers[index].answer){
-          this.addQuestion(question, this.surveyResponse.answers[index].answer);
-        } else {
-          this.addQuestion(question);
-        }
-      });
+      this.addQuestionsToForm();
     }
     if(this.inEditMode) {
       this.updateNavTitle();
@@ -255,6 +306,19 @@ export class SurveyEditPage {
       .subscribe(data => this.onValueChanged(data));
     this.onValueChanged(); // (re)set validation messages now
     // console.log("errors", this.formErrors);
+  }
+  addQuestionsToForm = () => {
+    this.questions.forEach( ( question, index ) => {
+      let answer: any;
+      if(this.surveyResponse && this.surveyResponse.answers){
+        answer = this.surveyResponse.answers.find(element => element.qid == question._id );
+      }
+      if(answer){
+        this.addQuestion(question, answer.answer);
+      } else {
+        this.addQuestion(question);
+      }
+    });
   }
   onValueChanged(data? : any) {
     for (const field in this.formErrors) {
@@ -274,23 +338,35 @@ export class SurveyEditPage {
   onSlideChangeStart(slider: Slides) {
     this.showNext = this.questions.length == 0 || slider.getActiveIndex() < (this.inEditMode?this.questions.length: this.questions.length -1) ;
     this.showPrev = !slider.isBeginning();
+    this.updateNavTitle(slider.getActiveIndex());
     
   }
+  slideNextStart() {
+    console.log("slideNextStart", this.surveySlider.getActiveIndex());
+    if(this.checkForRole(this.surveySlider.getActiveIndex()-1)){
+      this.resetForm(true);
+    } else {
+      this.content.scrollToTop();
+    }
+  }
+
+  slidePrevStart() {
+    console.log("slidePrevStart", this.surveySlider.getActiveIndex());
+    if(this.checkForRole(this.surveySlider.getActiveIndex()+1)){
+      this.resetForm(false);
+    } else {
+      this.content.scrollToTop();
+    } 
+  }
   prev() {
-    this.updateNavTitle(this.surveySlider.getActiveIndex() - 1 );
-    this.checkForRole(this.surveySlider.getActiveIndex())
     this.surveySlider.slidePrev();
-    this.content.scrollToTop();
 
   }
   next() {
     if(this.inEditMode && this.questions.length == 0 && this.surveySlider.getActiveIndex() == 0){
       this.editQuestion();
     } else {
-      this.checkForRole(this.surveySlider.getActiveIndex())
-      this.updateNavTitle(this.surveySlider.getActiveIndex() + 1 );
       this.surveySlider.slideNext();
-      this.content.scrollToTop();
     }
   }
   checkForRole(questionIndex: number, questionFormGroup?: FormGroup) {
@@ -299,16 +375,20 @@ export class SurveyEditPage {
         let ctrl = questionFormGroup? questionFormGroup:  (<FormGroup>(<FormArray>this.surveyForm.controls['questionArray']).controls[questionIndex]);
         let answr= ctrl.controls.answer.value;
         if(answr){
-          this.role = answr;
-          console.log(this.siteConfig.config["roles"]);
-          if(this.role == (this.siteConfig.config["roles"]  && this.siteConfig.config["roles"].length > 0 ? this.siteConfig.config["roles"][0]: "Mentor")){
-            this.is_mentor = true;
-          } else {
-            this.is_mentor = false;
+          if(this.role != answr){
+            this.role = answr;
+            console.log(this.siteConfig.config["roles"]);
+            if(this.role == (this.siteConfig.config["roles"]  && this.siteConfig.config["roles"].length > 0 ? this.siteConfig.config["roles"][0]: "Mentor")){
+              this.is_mentor = true;
+            } else {
+              this.is_mentor = false;
+            }
+            return true;
           }
         }
       }
     }
+    return false;
   }
   addQuestion(question: any, answer?: any, index?: number):void {
     let fbArgs: any  = {};
@@ -412,6 +492,7 @@ export class SurveyEditPage {
       (<FormArray>this.surveyForm.controls['questionArray']).push(this.formBuilder.group(fbArgs, extraValidator));
       // console.log((<FormArray>this.surveyForm.controls['questionArray']).length);
     }
+    if(this.surveySlider) this.surveySlider.update();
     
     
   }
@@ -630,7 +711,148 @@ export class SurveyEditPage {
     }
     return ans;
   }
-  save() {
+  updateSurveyResponse = () => {
+    // let newAnswers: any [] = [];
+    if(!this.surveyResponse) {
+      this.surveyResponse = {
+        survey: this.survey._id,
+        answers: []
+      }
+    }
+    this.surveyResponse.answered = true;
+    if(this.role){
+      this.surveyResponse.role = this.role;
+      this.surveyResponse.is_mentor  = this.is_mentor;
+    }
+    (<FormArray>this.surveyForm.controls.questionArray).controls.forEach((questionFormGroup: FormGroup, questionIndex: number) => {
+      let newAns: any;
+      let answer:any;
+      let answerIndex:number;
+      if(this.surveyResponse && this.surveyResponse.answers){
+        if(this.surveyCategory == "Profile") {
+          answerIndex = questionIndex;
+        } else {
+          answerIndex = this.surveyResponse.answers.findIndex(element => (element.qid && element.qid == this.questions[questionIndex]._id));
+        }
+        if(answerIndex!=-1) answer = this.surveyResponse.answers[answerIndex];
+      }
+      // if(this.questions[questionIndex].category=="Role") this.checkForRole(questionIndex, questionFormGroup)
+      if(this.questions[questionIndex].category=="Multiple" || this.questions[questionIndex].category=="Function") {
+        let multipeAnswers: string [] =[];
+        this.questions[questionIndex].choices.forEach((choice) => {
+          if (questionFormGroup.get(choice.order.toString()).value) {
+            multipeAnswers.push(choice.text);
+          }
+        });
+        if(this.questions[questionIndex].other_choice && questionFormGroup.controls.other_enabled.value && questionFormGroup.controls.other.value) {
+          multipeAnswers.push(questionFormGroup.controls.other.value);
+        }
+        newAns = multipeAnswers;
+      } else if((this.questions[questionIndex].category=="Radio" || this.questions[questionIndex].category=="Job Level") && this.questions[questionIndex].other_choice && questionFormGroup.controls.answer.value == "other_enabled") {
+        newAns = questionFormGroup.controls.other.value;
+      } else if(this.questions[questionIndex].category=="Age" && questionFormGroup.controls.answer.value) {
+        let age=+questionFormGroup.controls.answer.value;
+        age = age - 2000;
+        newAns = age;
+      } else if(this.questions[questionIndex].category=="Background") {
+        newAns = {
+          company: this.addKeywordToAnswer(questionFormGroup.controls.company.value, questionIndex, "company"),
+          designation: this.addKeywordToAnswer(questionFormGroup.controls.designation.value, questionIndex, "designation"),
+          industry: this.addKeywordToAnswer(questionFormGroup.controls.industry.value, questionIndex, "industry"),
+          is_student: this.backgroundExists?(this.backgroundExists == 'school'? true: false):questionFormGroup.controls.is_student.value,
+          school: this.addKeywordToAnswer(questionFormGroup.controls.school.value, questionIndex, "school"),
+          degree: this.addKeywordToAnswer(questionFormGroup.controls.degree.value, questionIndex, "degree"),
+          startYear: questionFormGroup.controls.startYear.value,
+          aid: questionFormGroup.controls.aid.value
+        };
+        if((newAns.is_student && !newAns.school && !newAns.degree && !newAns.startYear) || (!newAns.is_student && !newAns.company && !newAns.designation && !newAns.industry)){
+          newAns = undefined;
+        }
+      } else if(this.questions[questionIndex].category=="Sign") {
+        newAns = {
+          first: questionFormGroup.controls.first.value,
+          last: questionFormGroup.controls.last.value,
+          title: questionFormGroup.controls.title.value,
+          intro: questionFormGroup.controls.intro.value
+        };
+        if(newAns.first && !newAns.last && !newAns.title && !newAns.intro){
+          newAns = undefined;
+        }
+      }  else if(this.questions[questionIndex].category=="Contact") {
+        newAns = {
+          email: questionFormGroup.controls.email.value,
+          mobile: questionFormGroup.controls.mobile.value
+        };
+        if(!newAns.email && !newAns.mobile){
+          newAns = undefined;
+        }
+        if(newAns && answer){
+          if(newAns.email && answer.answer && (newAns.email != answer.answer.email || answer.answer.emailOTP)){
+            newAns.emailOTP = true;
+          }
+          if(newAns.mobile && answer.answer && (newAns.mobile != answer.answer.mobile || answer.answer.mobileOTP)){
+            newAns.mobileOTP = true;
+          }
+        }
+      } else if(this.questions[questionIndex].category=="Position") {
+        newAns = {
+          company: this.addKeywordToAnswer(questionFormGroup.controls.company.value, questionIndex, "company"),
+          designation: this.addKeywordToAnswer(questionFormGroup.controls.designation.value, questionIndex, "designation"),
+          industry: this.addKeywordToAnswer(questionFormGroup.controls.industry.value, questionIndex, "industry"),
+          is_current: questionFormGroup.controls.is_current.value,
+          location: this.addKeywordToAnswer(questionFormGroup.controls.location.value, questionIndex, "location"),
+          startDate: questionFormGroup.controls.startDate.value,
+          endDate: questionFormGroup.controls.endDate.value,
+          aid: questionFormGroup.controls.aid.value
+        };
+        if(!newAns.location && !newAns.startDate && !newAns.endDate &&  !newAns.company && !newAns.designation && !newAns.industry){
+          newAns = undefined;
+        }
+      }  else if(this.questions[questionIndex].category=="Education") {
+        newAns = {
+          school: this.addKeywordToAnswer(questionFormGroup.controls.school.value, questionIndex, "school"),
+          degree: this.addKeywordToAnswer(questionFormGroup.controls.degree.value, questionIndex, "degree"),
+          is_student: questionFormGroup.controls.is_student.value,
+          startYear: questionFormGroup.controls.startYear.value,
+          endYear: questionFormGroup.controls.endYear.value,
+          aid: questionFormGroup.controls.aid.value
+        };
+        if( !newAns.school && !newAns.degree && !newAns.startYear && !newAns.endYear){
+          newAns = undefined;
+        }
+      } else if(this.questions[questionIndex].category=="Photo") {
+        if(answer && !this.imgToUpload){
+          newAns =  answer.answer;
+        }
+      } else {
+        newAns= this.addKeywordToAnswer(questionFormGroup.controls.answer.value, questionIndex, "value");
+      }
+      let ansContainer = {
+        order: questionIndex,
+        qid: this.questions[questionIndex]._id,
+        category: this.questions[questionIndex].category,
+        question: this.is_mentor && this.questions[questionIndex].mentor_question? this.questions[questionIndex].mentor_question: this.questions[questionIndex].question,
+        answer: newAns
+      };
+      if(answerIndex!=-1) {
+        this.surveyResponse.answers[answerIndex] = ansContainer;
+      } else {
+        this.surveyResponse.answers.push(ansContainer);
+      }
+      // newAnswers.push(ansContainer); 
+
+    });
+    this.surveyResponse.extra ={
+      program: this.survey.profile.program,
+      category:  this.survey.profile.category,
+      is_mentor: this.is_mentor,
+      role: this.role,
+      userProgramId: this.survey.userProgramId
+    }
+    if(this.navParams.data.nonProfileEdit) this.surveyResponse.extra.nonProfileEdit = true;
+    // this.surveyResponse.answers= newAnswers;
+  }
+  save(ignoreRoleCheck?: boolean) {
     this.submitted = true;
     console.log("form Errors after submit: ", this.formErrors);
     console.log("this.surveyForm.valid:", this.surveyForm.valid, this.surveyForm);
@@ -645,178 +867,69 @@ export class SurveyEditPage {
         });
         this.surveySlider.slideTo(errorSlideIndex);
       } else {
-        let newAnswers: any [] = [];
-        (<FormArray>this.surveyForm.controls.questionArray).controls.forEach((questionFormGroup: FormGroup, questionIndex: number) => {
-          let newAns: any
-          if(this.questions[questionIndex].category=="Role") this.checkForRole(questionIndex, questionFormGroup)
-          if(this.questions[questionIndex].category=="Multiple" || this.questions[questionIndex].category=="Function") {
-            let multipeAnswers: string [] =[];
-            this.questions[questionIndex].choices.forEach((choice) => {
-              if (questionFormGroup.get(choice.order.toString()).value) {
-                multipeAnswers.push(choice.text);
-              }
-            });
-            if(this.questions[questionIndex].other_choice && questionFormGroup.controls.other_enabled.value && questionFormGroup.controls.other.value) {
-              multipeAnswers.push(questionFormGroup.controls.other.value);
-            }
-            newAns = multipeAnswers;
-          } else if((this.questions[questionIndex].category=="Radio" || this.questions[questionIndex].category=="Job Level") && this.questions[questionIndex].other_choice && questionFormGroup.controls.answer.value == "other_enabled") {
-            newAns = questionFormGroup.controls.other.value;
-          } else if(this.questions[questionIndex].category=="Age") {
-            let age=+questionFormGroup.controls.answer.value;
-            age = age - 2000;
-            newAns = age;
-          } else if(this.questions[questionIndex].category=="Background") {
-            newAns = {
-              company: this.addKeywordToAnswer(questionFormGroup.controls.company.value, questionIndex, "company"),
-              designation: this.addKeywordToAnswer(questionFormGroup.controls.designation.value, questionIndex, "designation"),
-              industry: this.addKeywordToAnswer(questionFormGroup.controls.industry.value, questionIndex, "industry"),
-              is_student: this.backgroundExists?(this.backgroundExists == 'school'? true: false):questionFormGroup.controls.is_student.value,
-              school: this.addKeywordToAnswer(questionFormGroup.controls.school.value, questionIndex, "school"),
-              degree: this.addKeywordToAnswer(questionFormGroup.controls.degree.value, questionIndex, "degree"),
-              startYear: questionFormGroup.controls.startYear.value,
-              aid: questionFormGroup.controls.aid.value
-            };
-            if((newAns.is_student && !newAns.school && !newAns.degree && !newAns.startYear) || (!newAns.is_student && !newAns.company && !newAns.designation && !newAns.industry)){
-              newAns = undefined;
-            }
-          } else if(this.questions[questionIndex].category=="Sign") {
-            newAns = {
-              first: questionFormGroup.controls.first.value,
-              last: questionFormGroup.controls.last.value,
-              title: questionFormGroup.controls.title.value,
-              intro: questionFormGroup.controls.intro.value
-            };
-            if(newAns.first && !newAns.last && !newAns.title && !newAns.intro){
-              newAns = undefined;
-            }
-          }  else if(this.questions[questionIndex].category=="Contact") {
-            let answers: any;
-            if(!this.surveyResponse) {
-              answers = this.surveyResponse.answers.filter(element => element.answer && element.category == "Contact");
-            }
-            let answer = answers && answers.length>0? answers[0]: undefined;
-            newAns = {
-              email: questionFormGroup.controls.email.value,
-              mobile: questionFormGroup.controls.mobile.value
-            };
-            if(!newAns.email && !newAns.mobile){
-              newAns = undefined;
-            }
-            if(newAns && answer){
-              if(newAns.email && answer.answer && newAns.email != answer.answer.email){
-                newAns.emailOTP = true;
-              }
-              if(newAns.mobile && answer.answer && newAns.mobile != answer.answer.mobile){
-                newAns.mobileOTP = true;
-              }
-            }
-          } else if(this.questions[questionIndex].category=="Position") {
-            newAns = {
-              company: this.addKeywordToAnswer(questionFormGroup.controls.company.value, questionIndex, "company"),
-              designation: this.addKeywordToAnswer(questionFormGroup.controls.designation.value, questionIndex, "designation"),
-              industry: this.addKeywordToAnswer(questionFormGroup.controls.industry.value, questionIndex, "industry"),
-              is_current: questionFormGroup.controls.is_current.value,
-              location: this.addKeywordToAnswer(questionFormGroup.controls.location.value, questionIndex, "location"),
-              startDate: questionFormGroup.controls.startDate.value,
-              endDate: questionFormGroup.controls.endDate.value,
-              aid: questionFormGroup.controls.aid.value
-            };
-            if(!newAns.location && !newAns.startDate && !newAns.endDate &&  !newAns.company && !newAns.designation && !newAns.industry){
-              newAns = undefined;
-            }
-          }  else if(this.questions[questionIndex].category=="Education") {
-            newAns = {
-              school: this.addKeywordToAnswer(questionFormGroup.controls.school.value, questionIndex, "school"),
-              degree: this.addKeywordToAnswer(questionFormGroup.controls.degree.value, questionIndex, "degree"),
-              is_student: questionFormGroup.controls.is_student.value,
-              startYear: questionFormGroup.controls.startYear.value,
-              endYear: questionFormGroup.controls.endYear.value,
-              aid: questionFormGroup.controls.aid.value
-            };
-            if( !newAns.school && !newAns.degree && !newAns.startYear && !newAns.endYear){
-              newAns = undefined;
-            }
-          } else if(this.questions[questionIndex].category=="Photo") {
-            if(this.surveyResponse && this.surveyResponse.answers && this.surveyResponse.answers[questionIndex] && !this.imgToUpload){
-              newAns =  this.surveyResponse.answers[questionIndex].answer;
-            }
-          } else {
-            newAns= this.addKeywordToAnswer(questionFormGroup.controls.answer.value, questionIndex, "value");
-          }
-          newAnswers.push({
-            order: questionIndex,
-            qid: this.questions[questionIndex]._id,
-            category: this.questions[questionIndex].category,
-            question: this.is_mentor && this.questions[questionIndex].mentor_question? this.questions[questionIndex].mentor_question: this.questions[questionIndex].question,
-            answer: newAns
-          }); 
-        });
-        if(!this.surveyResponse) {
-          this.surveyResponse = {
-            survey: this.survey._id,
-            answers: []
-          }
-        }
-        // this.surveyResponse.answered = true;
-        if(this.role){
-          this.surveyResponse.role = this.role;
-          this.surveyResponse.is_mentor  = this.is_mentor;
-        }
-        this.surveyResponse.extra ={
-          program: this.survey.profile.program,
-          category:  this.survey.profile.category,
-          is_mentor: this.is_mentor,
-          userProgramId: this.survey.userProgramId
-        }
-        this.surveyResponse.answers= newAnswers;
-        this.showLoading();
-        console.log("surveyResponse", this.surveyResponse); //, this.keywords );
-        if(this.surveyCategory == "Signup" || this.surveyCategory == "PostSignup" || this.surveyCategory == "Profile"){
-          this.auth.saveSignupForm(this.surveyResponse, this.imgToUpload)
-          .subscribe((data: any) => { 
-            this.dismissLoading();
-            console.log("response on saving surveyResponse", data);
-            if(data.success){
-              this.showToastWithCloseButton("Response has been saved!");
-              if(this.surveyCategory == "Signup" || this.surveyCategory == "PostSignup"){
-                if(data.survey){
-                  this.navCtrl.setRoot('SurveyEditPage', data);
-                } else {
-                  this.navCtrl.setRoot('TabsPage');
-                }
-              } else {
-                this.navCtrl.pop().then(() => {
-                  if(this.navParams.get('add')){
-                    if(this.questions[0].category=="Position") {
-                      this.surveyResponse.answers[0].answer.aid = data.aid;
-                    } else {
-                      this.surveyResponse.answers[0].answer.aid = data.aid;
+        console.log("active index", this.surveySlider.getActiveIndex())
+        if(!ignoreRoleCheck && this.checkForRole(this.surveySlider.getActiveIndex())){
+          this.resetForm(true);
+        } else {
+          this.updateSurveyResponse()
+          this.showLoading();
+          console.log("surveyResponse", this.surveyResponse); //, this.keywords );
+          if(this.surveyCategory == "Signup" || this.surveyCategory == "PostSignup" || this.surveyCategory == "Profile"){
+            this.auth.saveSignupForm(this.surveyResponse, this.imgToUpload)
+            .subscribe((data: any) => { 
+              this.dismissLoading();
+              console.log("response on saving surveyResponse", data);
+              if(data.success){
+                this.showToastWithCloseButton("Response has been saved!");
+                if(this.navParams.data.nonProfileEdit || this.surveyCategory == "Profile") {
+                  this.navCtrl.pop().then(() => {
+                    if(this.navParams.get('add')){
+                      if(this.questions[0].category=="Position") {
+                        this.surveyResponse.answers[0].answer.aid = data.aid;
+                      } else {
+                        this.surveyResponse.answers[0].answer.aid = data.aid;
+                      }
                     }
-                  }
-                  if(this.surveyCategory == "Profile" && this.questions[0].category=="Contact"){
-                    this.surveyResponse.answers[0].answer.email_verified = data.email_verified;
-                    this.surveyResponse.answers[0].answer.mobile_verified = data.mobile_verified;
-                  }
-                  this.navParams.get('callback')({
-                    survey: this.survey,
-                    surveyResponse: this.surveyResponse
+                    if(this.surveyCategory == "Profile" && this.questions[0].category=="Contact"){
+                      this.surveyResponse.answers[0].answer.email_verified = data.email_verified;
+                      this.surveyResponse.answers[0].answer.mobile_verified = data.mobile_verified;
+                    }
+                    let filteredAnswers;
+                    if(this.navParams.data.nonProfileEdit){
+                      let nonProfileQuestions = this.survey.questions.filter(element => this.auth.getProfileQuestionCategory().find(elem => elem == element.category) === undefined);
+                      if(this.role) nonProfileQuestions = nonProfileQuestions.filter(element => element.roles.find(elem => elem == this.role) !== undefined);
+                      filteredAnswers = this.surveyResponse.answers.filter(element => nonProfileQuestions.find(elem => elem._id == element.qid) !== undefined);
+                    }
+                    this.navParams.get('callback')({
+                      programIndex: this.navParams.data.programIndex,
+                      survey: this.survey,
+                      surveyResponse: this.surveyResponse,
+                      filteredAnswers: filteredAnswers
+                    });
                   });
-                });
-              }
+                } else if(this.surveyCategory == "Signup" || this.surveyCategory == "PostSignup"){
+                  if(data.survey){
+                    this.navCtrl.setRoot('SurveyEditPage', data);
+                  } else {
+                    this.navCtrl.setRoot('TabsPage');
+                  }
+                } else {
+                  
+                }
 
-            } else {
+              } else {
+                this.showToastWithCloseButton("Unable to save response. Please try later", 5000);
+              } 
+            },
+            err =>  {
+              console.log(err);
+              if(err.status && err.status=="401"){
+                this.auth.unauthorizedAccess();
+              }
+              this.dismissLoading();
               this.showToastWithCloseButton("Unable to save response. Please try later", 5000);
-            } 
-          },
-          err =>  {
-            console.log(err);
-            if(err.status && err.status=="401"){
-              this.auth.unauthorizedAccess();
-            }
-            this.dismissLoading();
-            this.showToastWithCloseButton("Unable to save response. Please try later", 5000);
-          });
+            });
+          }
         }
       }
     } else {
