@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>profile</ion-title>
+    <ion-title>Profile</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -49,22 +49,22 @@
             <div *ngIf="user.intro.surveyResponse && user.intro.surveyResponse.answers && user.intro.surveyResponse.answers.length>0">
             <h2>
               <span *ngIf="user.intro.surveyResponse.answers[0].answer.first">{{user.intro.surveyResponse.answers[0].answer.first}} {{user.intro.surveyResponse.answers[0].answer.last}}</span>
-              <span *ngIf="!user.intro.surveyResponse.answers[0].answer.first && inEditMode">Name:</span>
+              <span *ngIf="!user.intro.surveyResponse.answers[0].answer.first && inEditMode" class="subdued-color">Name:</span>
               <button *ngIf="inEditMode" ion-button small float-right icon-only (click)="editIntro()">
                   <ion-icon name="create"></ion-icon>
               </button>
             </h2>
             <p>
               <span *ngIf="user.intro.surveyResponse.answers[0].answer.title">{{user.intro.surveyResponse.answers[0].answer.title}}</span>
-              <span *ngIf="!user.intro.surveyResponse.answers[0].answer.title && inEditMode">Title:</span>  
+              <span *ngIf="!user.intro.surveyResponse.answers[0].answer.title && inEditMode" class="subdued-color">Title:</span>  
             </p>
             <p *ngIf="user.intro.surveyResponse && user.intro.surveyResponse.answers && user.intro.surveyResponse.answers[1]">
               <span *ngIf="user.intro.surveyResponse.answers[1].answer">{{user.intro.surveyResponse.answers[1].answer}}</span>
-              <span *ngIf="!user.intro.surveyResponse.answers[1].answer && inEditMode">Location:</span>
+              <span *ngIf="!user.intro.surveyResponse.answers[1].answer && inEditMode" class="subdued-color">Location:</span>
             </p>
             <p>
               <span *ngIf="user.intro.surveyResponse.answers[0].answer.intro">{{user.intro.surveyResponse.answers[0].answer.intro}}</span>
-              <span *ngIf="!user.intro.surveyResponse.answers[0].answer.intro && inEditMode">Introduction:</span>
+              <span *ngIf="!user.intro.surveyResponse.answers[0].answer.intro && inEditMode" class="subdued-color">Introduction:</span>
             </p>
             </div>
           </ion-card>
@@ -77,7 +77,7 @@
                 <button *ngIf="inEditMode && user.contact.surveyResponse.answers[0].answer.email && !user.contact.surveyResponse.answers[0].answer.email_verified" ion-button  small outline color ="danger" (click)="verifyContact(user.contact.surveyResponse.answers[0].answer.email, undefined)" >
                   <ion-icon name="done-all"></ion-icon> &nbsp;Verify
                 </button>
-                <span *ngIf="!user.contact.surveyResponse.answers[0].answer.email">Email:</span>
+                <span *ngIf="!user.contact.surveyResponse.answers[0].answer.email" class="subdued-color">Email:</span>
                 <button *ngIf="inEditMode" ion-button small float-right icon-only (click)="editContact()"><ion-icon name="create"></ion-icon></button>
               </h3>
               <h3>
@@ -85,7 +85,7 @@
                 <button *ngIf="inEditMode && user.contact.surveyResponse.answers[0].answer.mobile && !user.contact.surveyResponse.answers[0].answer.mobile_verified" ion-button  small outline color ="danger"  (click)="verifyContact(undefined, user.contact.surveyResponse.answers[0].answer.mobile)" >
                     <ion-icon name="done-all"></ion-icon> &nbsp;Verify
                   </button>
-                <span *ngIf="!user.contact.surveyResponse.answers[0].answer.mobile">Mobile:</span>
+                <span *ngIf="!user.contact.surveyResponse.answers[0].answer.mobile" class="subdued-color">Mobile:</span>
               </h3>
             </div>
           </ion-card>
@@ -142,11 +142,11 @@
         <ion-col col-12 col-xs-12 col-md-12 col-lg-6 col-xl-6 *ngIf="user.personal_profile">
           <ion-card  padding>
             <div >
-              <h3>Age : {{user.personal_profile.surveyResponse.answers[0].answer}}
+              <h3><span class="subdued-color">Age :</span> {{user.personal_profile.surveyResponse.answers[0].answer}}
                   <button *ngIf="inEditMode" ion-button small float-right icon-only (click)="editPersonalProfile()"><ion-icon name="create"></ion-icon></button>
               </h3>
-              <h3>Gender : {{user.personal_profile.surveyResponse.answers[1].answer}}</h3>
-              <h3>Experience : {{user.personal_profile.surveyResponse.answers[2].answer? user.personal_profile.surveyResponse.answers[2].answer+ " years":""}}</h3>
+              <h3><span class="subdued-color">Gender :</span> {{user.personal_profile.surveyResponse.answers[1].answer}}</h3>
+              <h3><span class="subdued-color">Experience :</span> {{user.personal_profile.surveyResponse.answers[2].answer? user.personal_profile.surveyResponse.answers[2].answer+ " years":""}}</h3>
             </div>
 
           </ion-card>
@@ -154,12 +154,12 @@
         <ion-col col-12 col-xs-12 col-md-12 col-lg-6 col-xl-6  *ngIf="user.professional_profile" >
           <ion-card padding>
             <div >
-              <h3>Skills : {{user.professional_profile.surveyResponse.answers[0].answer?user.professional_profile.surveyResponse.answers[0].answer.join(", "):""}}
+              <h3><span class="subdued-color">Skills :</span> {{user.professional_profile.surveyResponse.answers[0].answer?user.professional_profile.surveyResponse.answers[0].answer.join(", "):""}}
                   <button *ngIf="inEditMode" ion-button small float-right icon-only (click)="editProfessionalProfile()"><ion-icon name="create"></ion-icon></button>
               </h3>
-              <h3>Function : {{user.professional_profile.surveyResponse.answers[1].answer?user.professional_profile.surveyResponse.answers[1].answer.join(", "):""}}</h3>
-              <h3>Level : {{user.professional_profile.surveyResponse.answers[2].answer}}</h3>
-              <h3>Industry : {{user.professional_profile.surveyResponse.answers[3].answer?user.professional_profile.surveyResponse.answers[3].answer.join(", "):""}}</h3>
+              <h3><span class="subdued-color">Function :</span> {{user.professional_profile.surveyResponse.answers[1].answer?user.professional_profile.surveyResponse.answers[1].answer.join(", "):""}}</h3>
+              <h3><span class="subdued-color">Level :</span> {{user.professional_profile.surveyResponse.answers[2].answer}}</h3>
+              <h3><span class="subdued-color">Industry :</span> {{user.professional_profile.surveyResponse.answers[3].answer?user.professional_profile.surveyResponse.answers[3].answer.join(", "):""}}</h3>
             </div>
 
           </ion-card>
@@ -172,7 +172,7 @@
               <button *ngIf="inEditMode && indx == 0" ion-button small float-right icon-only (click)="editProgram(program, i)"><ion-icon name="create"></ion-icon></button>
               <div>
                 <h3 *ngIf="indx!=0">&nbsp;</h3>
-                <h3>{{answer.question}}</h3>
+                <h3 class="subdued-color">{{answer.question}}</h3>
 
                 
                 <div *ngIf="answer.category == 'Star Rating' ">
@@ -193,8 +193,7 @@
           </ion-card>
         </ion-col>
     </ion-row>
-    <ion-row padding>
-        <!-- Avatar -->
+    <!-- <ion-row padding>
         <ion-col col-3>
                 <ion-item>
                   <ion-avatar item-start>
@@ -202,7 +201,6 @@
                   </ion-avatar>
                 </ion-item>
         </ion-col>
-        <!-- Information about user -->
         <ion-col col-3 text-center >
           <h6>21</h6>
           <p no-padding no-margin>Thanks</p>
@@ -215,7 +213,7 @@
           <h6>8</h6>
           <p no-padding no-margin>Badges</p>
         </ion-col>
-      </ion-row>
+      </ion-row> -->
   </ion-grid>
 
 </ion-content>
